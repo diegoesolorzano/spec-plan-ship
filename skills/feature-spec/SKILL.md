@@ -8,7 +8,7 @@ description: >
   Use when: "new feature", "I want to add", "let's build", "feature spec",
   or before any non-trivial implementation.
   Saves spec to docs/specs/ for review and approval before planning.
-allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
+allowed-tools: Read, Glob, Grep, Write, Question
 model: opus
 ---
 
