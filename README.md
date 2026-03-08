@@ -12,7 +12,8 @@ Born from combining the best ideas of [BMAD Method](https://docs.bmad-method.org
 |------|------|-------------|
 | `skills/feature-spec/SKILL.md` | Skill | **PM mode** — Defines WHAT to build and WHY. Socratic questioning, acceptance criteria, impact analysis. |
 | `skills/feature-plan/SKILL.md` | Skill | **Architect mode** — Defines HOW, WHERE, and in what ORDER. Granular tasks with adversarial review. |
-| `rules/feature-workflow.md` | Rule | **Orchestrator** — Reminds Claude to follow the spec → plan → ship flow automatically. |
+| `skills/tdd/SKILL.md` | Skill | **QA mode** — RED-GREEN-REFACTOR cycle. Unit + integration + E2E tests against real services. |
+| `rules/feature-workflow.md` | Rule | **Orchestrator** — Reminds Claude to follow the spec → plan → test → ship flow automatically. |
 
 ## The Flow
 
@@ -23,9 +24,11 @@ Born from combining the best ideas of [BMAD Method](https://docs.bmad-method.org
                                ↓
                            Adversarial Review (subagent)
                                ↓
-3. Implement              →  Execute tasks in order
+3. /tdd [task]            →  Write tests FIRST (RED → GREEN → REFACTOR)
                                ↓
-4. Test → Review → Commit →  Ship it
+4. Implement              →  Execute tasks, tests guide you
+                               ↓
+5. Review → Commit        →  Ship it
 ```
 
 ## Why This Exists
@@ -36,7 +39,7 @@ Most AI coding workflows skip straight to implementation. That works for small f
 - Building it wrong (no plan)
 - Missing edge cases (no review)
 
-**spec-plan-ship** adds just enough structure to prevent these problems, without slowing you down. Three files. No CLI tools. No dependencies.
+**spec-plan-ship** adds just enough structure to prevent these problems, without slowing you down. Four files. No CLI tools. No dependencies.
 
 ## Installation
 
@@ -46,7 +49,7 @@ Copy the files into your project's `.claude/` directory:
 
 ```bash
 # From your project root
-mkdir -p .claude/skills/feature-spec .claude/skills/feature-plan .claude/rules docs/specs
+mkdir -p .claude/skills/feature-spec .claude/skills/feature-plan .claude/skills/tdd .claude/rules docs/specs
 
 # Copy skills
 curl -sL https://raw.githubusercontent.com/diegosolorzano/spec-plan-ship/main/skills/feature-spec/SKILL.md \
@@ -54,6 +57,9 @@ curl -sL https://raw.githubusercontent.com/diegosolorzano/spec-plan-ship/main/sk
 
 curl -sL https://raw.githubusercontent.com/diegosolorzano/spec-plan-ship/main/skills/feature-plan/SKILL.md \
   -o .claude/skills/feature-plan/SKILL.md
+
+curl -sL https://raw.githubusercontent.com/diegosolorzano/spec-plan-ship/main/skills/tdd/SKILL.md \
+  -o .claude/skills/tdd/SKILL.md
 
 # Copy rule
 curl -sL https://raw.githubusercontent.com/diegosolorzano/spec-plan-ship/main/rules/feature-workflow.md \
@@ -75,7 +81,7 @@ mkdir -p your-project/docs/specs
 
 ### Verify
 
-Open Claude Code in your project. You should see `/feature-spec` and `/feature-plan` in your available skills.
+Open Claude Code in your project. You should see `/feature-spec`, `/feature-plan`, and `/tdd` in your available skills.
 
 ## Usage
 
@@ -131,9 +137,25 @@ Claude enters **Architect mode** and will:
 - Depends on: Task 1
 ```
 
-### Step 3: Ship
+### Step 3: Test-Driven Implementation
 
-Execute the tasks from the plan in order. The workflow rule will remind Claude to follow the process.
+For each plan task marked `Tests: Yes`:
+
+```
+/tdd "user can reset password with valid token"
+```
+
+Claude enters **QA mode** and will:
+- Write failing tests FIRST (RED)
+- Implement minimum code to pass (GREEN)
+- Refactor with green tests as safety net (REFACTOR)
+- Cover unit, integration, AND E2E tests against real services
+
+**Philosophy: Real over mocked.** Tests run against your actual database, real auth, real file system. Mocks are only for external paid APIs (Stripe, OpenAI, etc.).
+
+### Step 4: Ship
+
+Execute remaining tasks from the plan. The workflow rule reminds Claude to follow the process.
 
 ## What Each Piece Does
 
@@ -163,6 +185,17 @@ Inspired by **Superpowers**' granular task planning and **BMAD**'s adversarial r
   - **Verifiable** — includes how to confirm it works
 - **Adversarial review**: Before presenting the plan, launches a subagent that critiques it for completeness, architecture, ordering, risks, and scope. Incorporates findings automatically.
 
+### `/tdd` — The QA Engineer
+
+Inspired by **Superpowers**' TDD enforcement and the principle that real tests beat mocked tests.
+
+- Follows RED → GREEN → REFACTOR strictly
+- Tests at all levels: unit, integration, E2E
+- **E2E tests are mandatory for user-facing features** — not optional
+- Tests against real services by default (database, auth, file system)
+- Only mocks external paid APIs (Stripe, OpenAI, etc.)
+- Integrates with `/feature-plan` — picks up tasks marked `Tests: Yes`
+
 ### `feature-workflow.md` — The Orchestrator
 
 A lightweight rule that reminds Claude to follow the flow when implementing non-trivial changes. Skips automatically for config tweaks, typo fixes, and one-line changes.
@@ -185,13 +218,12 @@ The skills reference generic paths. Update them to match your project structure:
 
 ### Extending the Flow
 
-The workflow rule references optional skills for testing and review. Add your own or use community skills:
+The workflow includes spec, plan, TDD, and implementation. You can add more skills for review and commit:
 
 ```markdown
-# In rules/feature-workflow.md
-4. **Test** — Use `/tdd-workflow` for tasks requiring tests
-5. **Review** — Use `/code-review` for quality check
-6. **Commit** — Use `/semantic-commit`
+# In rules/feature-workflow.md — add after step 3:
+4. **Review** — Use `/code-review` for quality check
+5. **Commit** — Use `/semantic-commit` for conventional commits
 ```
 
 ### Changing the Model
