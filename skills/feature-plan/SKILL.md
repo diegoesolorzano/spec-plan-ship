@@ -9,7 +9,7 @@ description: >
   via subagent before presenting. Use after /feature-spec or directly for
   small-medium changes.
 argument-hint: [spec-file-path]
-allowed-tools: Read, Glob, Grep, Write, Question, Task
+allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Agent
 model: opus
 ---
 
@@ -85,7 +85,7 @@ Use the template below.
 
 **Before presenting the plan to the user**, save the draft to `.claude/plans/{feature-slug}-plan.md` and launch a subagent to review it adversarially.
 
-Use the Task tool with `subagent_type: "general"` and the following prompt:
+Use the Agent tool with `subagent_type: "Plan"` and the following prompt:
 
 ```
 You are a Senior Staff Engineer reviewing an implementation plan. Your job is to find flaws, gaps, and improvements. Be adversarial — assume the plan has problems.

@@ -8,7 +8,7 @@ description: >
   have Tests: Yes. Use with: "tdd", "write tests first", "test driven",
   or before implementing any task marked for testing.
 argument-hint: [task-description or plan-file-path]
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Question
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, AskUserQuestion
 model: sonnet
 ---
 
