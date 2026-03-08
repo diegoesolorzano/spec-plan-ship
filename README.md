@@ -52,17 +52,17 @@ Copy the files into your project's `.claude/` directory:
 mkdir -p .claude/skills/feature-spec .claude/skills/feature-plan .claude/skills/tdd .claude/rules docs/specs
 
 # Copy skills
-curl -sL https://raw.githubusercontent.com/diegosolorzano/spec-plan-ship/main/skills/feature-spec/SKILL.md \
+curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/feature-spec/SKILL.md \
   -o .claude/skills/feature-spec/SKILL.md
 
-curl -sL https://raw.githubusercontent.com/diegosolorzano/spec-plan-ship/main/skills/feature-plan/SKILL.md \
+curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/feature-plan/SKILL.md \
   -o .claude/skills/feature-plan/SKILL.md
 
-curl -sL https://raw.githubusercontent.com/diegosolorzano/spec-plan-ship/main/skills/tdd/SKILL.md \
+curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/tdd/SKILL.md \
   -o .claude/skills/tdd/SKILL.md
 
 # Copy rule
-curl -sL https://raw.githubusercontent.com/diegosolorzano/spec-plan-ship/main/rules/feature-workflow.md \
+curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/rules/feature-workflow.md \
   -o .claude/rules/feature-workflow.md
 ```
 
@@ -73,7 +73,7 @@ curl -sL https://raw.githubusercontent.com/diegosolorzano/spec-plan-ship/main/ru
 3. Create `docs/specs/` for spec artifacts
 
 ```bash
-git clone https://github.com/diegosolorzano/spec-plan-ship.git
+git clone https://github.com/diegoesolorzano/spec-plan-ship.git
 cp -r spec-plan-ship/skills/ your-project/.claude/skills/
 cp -r spec-plan-ship/rules/ your-project/.claude/rules/
 mkdir -p your-project/docs/specs
