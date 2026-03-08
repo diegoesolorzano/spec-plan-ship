@@ -1,6 +1,6 @@
-# spec-plan-ship
-
-**Spec it. Plan it. Ship it.**
+<p align="center">
+  <img src="docs/banner.svg" alt="spec-plan-ship — Spec it. Plan it. Ship it." width="800">
+</p>
 
 A lightweight, battle-tested skill kit for [Claude Code](https://www.anthropic.com/claude-code) that brings structured feature development to your workflow — without the overhead of enterprise frameworks.
 

@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="800" height="200">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </linearGradient>
+
+    <!-- Soft glow filter -->
+    <filter id="glowSoft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="18" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="nodeGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4"/>
+    </filter>
+
+    <!-- Grid pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(15,23,42,0.04)" stroke-width="0.5"/>
+    </pattern>
+
+    <!-- Rounded rect clip -->
+    <clipPath id="roundedOuter">
+      <rect width="800" height="200" rx="12" ry="12"/>
+    </clipPath>
+  </defs>
+
+  <!-- Clipped container -->
+  <g clip-path="url(#roundedOuter)">
+
+    <!-- Background -->
+    <rect width="800" height="200" fill="url(#bg)"/>
+
+    <!-- Grid overlay -->
+    <rect width="800" height="200" fill="url(#grid)"/>
+
+    <!-- Atmospheric orbs -->
+    <ellipse cx="150" cy="100" rx="180" ry="120" fill="rgba(37,99,235,0.03)" filter="url(#glowSoft)"/>
+    <ellipse cx="650" cy="100" rx="160" ry="110" fill="rgba(124,58,237,0.025)" filter="url(#glowSoft)"/>
+
+    <!-- ===== Flow Nodes: 4 connected steps ===== -->
+    <!-- Connector line -->
+    <line x1="246" y1="148" x2="554" y2="148" stroke="rgba(15,23,42,0.06)" stroke-width="1"/>
+
+    <!-- Colored segment overlays -->
+    <line x1="246" y1="148" x2="349" y2="148" stroke="rgba(37,99,235,0.2)" stroke-width="1"/>
+    <line x1="349" y1="148" x2="451" y2="148" stroke="rgba(124,58,237,0.18)" stroke-width="1"/>
+    <line x1="451" y1="148" x2="554" y2="148" stroke="rgba(22,163,74,0.15)" stroke-width="1"/>
+
+    <!-- Node 1: Spec (blue) -->
+    <circle cx="246" cy="148" r="4" fill="rgba(37,99,235,0.08)" filter="url(#nodeGlow)"/>
+    <circle cx="246" cy="148" r="3.5" fill="#ffffff" stroke="#2563eb" stroke-width="1.2"/>
+    <circle cx="246" cy="148" r="1.5" fill="#2563eb"/>
+    <text x="246" y="170" text-anchor="middle" fill="#94a3b8" font-family="'SF Mono','Fira Code','Cascadia Code',monospace" font-size="9" letter-spacing="0.5">spec</text>
+
+    <!-- Node 2: Plan (purple) -->
+    <circle cx="349" cy="148" r="4" fill="rgba(124,58,237,0.08)" filter="url(#nodeGlow)"/>
+    <circle cx="349" cy="148" r="3.5" fill="#ffffff" stroke="#7c3aed" stroke-width="1.2"/>
+    <circle cx="349" cy="148" r="1.5" fill="#7c3aed"/>
+    <text x="349" y="170" text-anchor="middle" fill="#94a3b8" font-family="'SF Mono','Fira Code','Cascadia Code',monospace" font-size="9" letter-spacing="0.5">plan</text>
+
+    <!-- Node 3: Test (green) -->
+    <circle cx="451" cy="148" r="4" fill="rgba(22,163,74,0.08)" filter="url(#nodeGlow)"/>
+    <circle cx="451" cy="148" r="3.5" fill="#ffffff" stroke="#16a34a" stroke-width="1.2"/>
+    <circle cx="451" cy="148" r="1.5" fill="#16a34a"/>
+    <text x="451" y="170" text-anchor="middle" fill="#94a3b8" font-family="'SF Mono','Fira Code','Cascadia Code',monospace" font-size="9" letter-spacing="0.5">test</text>
+
+    <!-- Node 4: Ship (orange) -->
+    <circle cx="554" cy="148" r="4" fill="rgba(234,88,12,0.08)" filter="url(#nodeGlow)"/>
+    <circle cx="554" cy="148" r="3.5" fill="#ffffff" stroke="#ea580c" stroke-width="1.2"/>
+    <circle cx="554" cy="148" r="1.5" fill="#ea580c"/>
+    <text x="554" y="170" text-anchor="middle" fill="#94a3b8" font-family="'SF Mono','Fira Code','Cascadia Code',monospace" font-size="9" letter-spacing="0.5">ship</text>
+
+    <!-- Small directional arrows -->
+    <path d="M 260 148 L 266 145 L 266 151 Z" fill="rgba(37,99,235,0.25)"/>
+    <path d="M 363 148 L 369 145 L 369 151 Z" fill="rgba(124,58,237,0.25)"/>
+    <path d="M 465 148 L 471 145 L 471 151 Z" fill="rgba(22,163,74,0.2)"/>
+
+    <!-- ===== Main Title ===== -->
+    <text x="400" y="72" text-anchor="middle" fill="#0f172a" font-family="system-ui,-apple-system,'Segoe UI',sans-serif" font-size="38" font-weight="700" letter-spacing="-1.5">
+      spec-plan-ship
+    </text>
+
+    <!-- Tagline -->
+    <text x="400" y="102" text-anchor="middle" fill="#64748b" font-family="system-ui,-apple-system,'Segoe UI',sans-serif" font-size="14" font-weight="400" letter-spacing="0.5">
+      Spec it. Plan it. Ship it.
+    </text>
+
+    <!-- Accent line under title -->
+    <rect x="370" y="82" width="60" height="1.5" rx="0.75" fill="#2563eb" opacity="0.3"/>
+
+    <!-- Corner decorative elements -->
+    <rect x="20" y="20" width="16" height="1" rx="0.5" fill="rgba(37,99,235,0.12)"/>
+    <rect x="20" y="20" width="1" height="16" rx="0.5" fill="rgba(37,99,235,0.12)"/>
+    <rect x="764" y="179" width="16" height="1" rx="0.5" fill="rgba(37,99,235,0.12)"/>
+    <rect x="779" y="164" width="1" height="16" rx="0.5" fill="rgba(37,99,235,0.12)"/>
+
+    <!-- Outer border -->
+    <rect width="800" height="200" rx="12" ry="12" fill="none" stroke="rgba(15,23,42,0.06)" stroke-width="1"/>
+
+  </g>
+</svg>
