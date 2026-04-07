@@ -10,7 +10,7 @@ Born from combining the best ideas of [BMAD Method](https://docs.bmad-method.org
 
 | File | Type | What It Does |
 |------|------|-------------|
-| `skills/feature-spec/SKILL.md` | Skill | **PM mode** — Defines WHAT to build and WHY. Socratic questioning, acceptance criteria, impact analysis. |
+| `skills/feature-spec/SKILL.md` | Skill | **PM + Tech Lead mode** — Defines WHAT, WHY, and key design decisions. Socratic questioning, acceptance criteria, design decisions, risks, deploy checklist. Detail scales to complexity. |
 | `skills/feature-plan/SKILL.md` | Skill | **Architect mode** — Defines HOW, WHERE, and in what ORDER. Granular tasks with adversarial review. |
 | `skills/tdd/SKILL.md` | Skill | **QA mode** — RED-GREEN-REFACTOR cycle. Unit + integration + E2E tests against real services. |
 | `rules/feature-workflow.md` | Rule | **Orchestrator** — Reminds Claude to follow the spec → plan → test → ship flow automatically. |
@@ -164,14 +164,16 @@ Execute remaining tasks from the plan. The workflow rule reminds Claude to follo
 Inspired by **Spec-Kit**'s "specifications as executable artifacts" philosophy and **BMAD**'s Product Manager agent.
 
 - Asks questions before assuming (Socratic method)
-- Separates WHAT from HOW (specs never include technical decisions)
-- Produces a lightweight spec (~1 page) with:
-  - Problem statement
-  - Functional requirements
-  - Acceptance criteria (Given/When/Then)
-  - Impacted systems (with file paths from your codebase)
-  - Out of scope
-  - Open questions
+- Captures WHAT, WHY, and key design decisions
+- Detail scales to complexity — simple features get short specs, complex features get comprehensive specs
+- Produces a spec with:
+  - Problem statement and background context
+  - Functional requirements and acceptance criteria (Given/When/Then)
+  - Scope grouped by area with file paths
+  - Design decisions with reasoning
+  - Schema, API, and UI changes
+  - Risks with mitigation and rollback
+  - Deploy checklist
 
 ### `/feature-plan` — The Architect
 
@@ -254,9 +256,9 @@ The adversarial review in `/feature-plan` uses a Claude Code subagent (not a sep
 - No external dependencies
 - Can be extended later to also use a different model for diversity of opinion
 
-### Why Lightweight Specs?
+### Why Scalable Specs?
 
-Spec-Kit's full workflow includes constitution, specification, plan, tasks, and implementation phases with a CLI tool. We found that for solo devs, a ~1 page spec with clear acceptance criteria is enough. The overhead of managing multiple artifact types isn't worth it when you're the only stakeholder.
+Spec-Kit's full workflow includes constitution, specification, plan, tasks, and implementation phases with a CLI tool. We found that for solo devs, a spec that scales to the feature's complexity works best — simple changes get brief specs, complex features get comprehensive specs with full decision context. The overhead of managing multiple artifact types isn't worth it when you're the only stakeholder, but under-documenting complex decisions leads to "why did we do this?" questions later.
 
 ## Credits & Inspiration
 
