@@ -317,6 +317,24 @@ The adversarial review in `/feature-plan` uses a Claude Code subagent (not a sep
 
 Spec-Kit's full workflow includes constitution, specification, plan, tasks, and implementation phases with a CLI tool. We found that for solo devs, a spec that scales to the feature's complexity works best — simple changes get brief specs, complex features get comprehensive specs with full decision context. The overhead of managing multiple artifact types isn't worth it when you're the only stakeholder, but under-documenting complex decisions leads to "why did we do this?" questions later.
 
+## Community Integrations
+
+spec-plan-ship is tool-agnostic by design — it works with Claude Code alone. But if you use other AI coding tools, you can add external review agents for diversity of opinion:
+
+### OpenCode (cross-model review)
+
+If you have [OpenCode](https://opencode.ai) installed, you can send plans, code, and test artifacts to a different model for independent review:
+
+| Agent | What It Reviews | Example |
+|-------|----------------|---------|
+| `plan-reviewer` | Implementation plans | `opencode run --agent plan-reviewer --dir . "Review this plan" -f .claude/plans/my-plan.md` |
+| `readonly-code-reviewer` | Code changes | `opencode run --agent readonly-code-reviewer --dir . "Review recent changes"` |
+| `test-reviewer` | Test plans and test suites | `opencode run --agent test-reviewer --dir . "Review test coverage" -f .claude/plans/my-tests.md` |
+
+These agents operate in read-only mode — they analyze and report, never modify files. The value is getting a second opinion from a different model (GPT, Gemini, etc.) before implementing.
+
+To set up, create agent files in `~/.config/opencode/agents/agent/` — see [OpenCode docs](https://opencode.ai) for agent configuration.
+
 ## Credits & Inspiration
 
 This kit wouldn't exist without these projects:
