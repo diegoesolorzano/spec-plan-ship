@@ -60,6 +60,14 @@ Break the implementation into tasks. Each task should be:
 - **Verifiable** — includes how to confirm it works
 - **Architecturally anchored** — includes the typed shape of what it produces (full mode)
 
+After defining all tasks, add a **Test Matrix** section (full mode only):
+1. Map every acceptance criterion from the spec to at least one test case
+2. Identify shared test infrastructure (fixtures, factories, setup/teardown)
+3. For each task marked `Tests: Yes`, design test cases with Given/When/Then
+4. Include the contract-under-test signature (from the task's Produces block)
+5. For cross-layer features (DB + API + Store + UI), add 2-3 E2E flow descriptions
+6. Independently identify pure functions that should be tested even if the task is marked `Tests: No`
+
 #### Full Mode Template (default)
 
 ```markdown
@@ -99,6 +107,43 @@ interface ExampleOutput { ... }
 
 ### Task 2: {Title}
 ...
+
+## Test Matrix
+
+### Shared Test Infrastructure
+- **Framework:** {detected test framework}
+- **Fixtures:** {shared test data across tasks}
+- **Factories:** {builder functions for complex test objects}
+
+### Acceptance Criteria → Test Mapping
+
+| AC | Test Location | Case |
+|----|--------------|------|
+| Given X, When Y, Then Z | `path/to/test.ts` | case name |
+
+### Per-Task Test Cases
+
+#### Task N: {Title}
+**File:** `path/to/file.test.ts`
+**Type:** Unit | Integration | E2E
+**Contract under test:**
+```typescript
+// The signature being tested (from Produces block)
+export async function doThing(input: ExampleInput): Promise<ExampleOutput>;
+```
+
+| # | Case | Given | When | Then | Type |
+|---|------|-------|------|------|------|
+| 1 | happy path | ... | ... | ... | unit |
+| 2 | edge case | ... | ... | ... | unit |
+| 3 | error path | ... | ... | ... | unit |
+
+(repeat for each task marked Tests: Yes)
+
+### E2E Flows (for cross-layer features)
+
+1. {User journey} → assert {result}
+2. {Step} → assert {result}
 
 ## Patterns to Reuse
 
@@ -167,6 +212,12 @@ RISKS:
 - Are there unidentified risks?
 - Are the mitigations realistic?
 - What could go wrong that isn't mentioned?
+
+TEST COVERAGE:
+- Does every acceptance criterion have at least one test case in the Test Matrix?
+- Are there pure functions marked `Tests: No` that should have unit tests?
+- For cross-layer features, are there E2E flows testing the integration boundaries?
+- Are contract-under-test signatures present for each testable task?
 
 SCOPE:
 - Is anything over-engineered for what the spec asks?

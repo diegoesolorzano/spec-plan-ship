@@ -28,9 +28,13 @@ REFACTOR: Improve the code while keeping tests green
 
 ### Step 1: Understand What to Test
 
+- **Check for test design artifacts first** (in priority order):
+  1. Look in `.claude/plans/` for a `*-tests.md` file (full test plan from `/test-plan`). If found, use it as the primary source of test cases.
+  2. Check the feature plan (`.claude/plans/*-plan.md`) for a `## Test Matrix` section. If found, use the per-task cases and shared fixtures from it.
+  3. If neither exists, design tests based on the task's Do/Produces blocks.
 - If given a plan file path, read it and identify tasks marked `Tests: Yes`
 - If given a task description, clarify what behavior needs testing
-- If unclear, ask: "What behavior should I test?"
+- **Pure function override:** If a task is marked `Tests: No` but contains pure functions with clear input/output contracts (math, transformations, validators, formatters), write unit tests for them anyway. `Tests: No` means "no integration/E2E test at this task level" — not "this code should never be tested."
 
 ### Step 2: Identify Test Type
 
