@@ -11,25 +11,39 @@ Born from combining the best ideas of [BMAD Method](https://docs.bmad-method.org
 | File | Type | What It Does |
 |------|------|-------------|
 | `skills/feature-spec/SKILL.md` | Skill | **PM + Tech Lead mode** — Defines WHAT, WHY, and key design decisions. Socratic questioning, acceptance criteria, design decisions, risks, deploy checklist. Detail scales to complexity. |
-| `skills/feature-plan/SKILL.md` | Skill | **Architect mode** — Defines HOW, WHERE, and in what ORDER. Granular tasks with adversarial review. |
-| `skills/tdd/SKILL.md` | Skill | **QA mode** — RED-GREEN-REFACTOR cycle. Unit + integration + E2E tests against real services. |
-| `rules/feature-workflow.md` | Rule | **Orchestrator** — Reminds Claude to follow the spec → plan → test → ship flow automatically. |
+| `skills/feature-plan/SKILL.md` | Skill | **Architect mode** — Defines HOW, WHERE, and in what ORDER. Granular tasks with adversarial review. Includes an embedded Test Matrix for test design. |
+| `skills/test-plan/SKILL.md` | Skill | **QA Architect mode** (Medium+ features) — Expands the plan's Test Matrix into a comprehensive standalone test suite with E2E flows, fixtures, factories, and parallelization groups. |
+| `skills/tdd/SKILL.md` | Skill | **QA mode** — RED-GREEN-REFACTOR cycle. Consumes test plan or Test Matrix. Tests pure functions even when marked `Tests: No`. |
+| `rules/feature-workflow.md` | Rule | **Orchestrator** — Tiered workflow: spec → plan (with Test Matrix) → test-plan (Medium+ only) → implement → ship. Supports parallel task execution. |
 
 ## The Flow
 
 ```
 1. /feature-spec          →  Spec (WHAT & WHY)
                                ↓
-2. /feature-plan [spec]   →  Plan (HOW & WHERE)
+2. /feature-plan [spec]   →  Plan (HOW & WHERE) + Test Matrix
                                ↓
                            Adversarial Review (subagent)
                                ↓
-3. /tdd [task]            →  Write tests FIRST (RED → GREEN → REFACTOR)
+3. /test-plan [plan]      →  Full test suite (Medium+ only)
+      ↓                        Low complexity? Skip — Test Matrix is enough
+                           Adversarial Review (subagent)
                                ↓
-4. Implement              →  Execute tasks, tests guide you
+4. /tdd [task]            →  Write tests from test plan or Test Matrix
+      ↓                        (RED → GREEN → REFACTOR)
+      ↓                        Independent tasks run in parallel
+5. Implement              →  Execute tasks, tests guide you
                                ↓
-5. Review → Commit        →  Ship it
+6. Review → Commit        →  Ship it
 ```
+
+### When to use `/test-plan` vs the embedded Test Matrix
+
+| Feature complexity | Test approach | Why |
+|-------------------|--------------|-----|
+| **Low** (single layer, CRUD, config) | Test Matrix in plan | Sufficient coverage, minimal overhead |
+| **Medium+** (cross-layer, shared state, multiple consumers) | `/test-plan` | E2E flows, cross-task integration tests, shared fixtures at code level |
+| **Visual/creative** (canvas, animations) | `/test-plan` | Independently identifies testable pure functions even when tasks say `Tests: No` |
 
 ## Why This Exists
 
@@ -39,7 +53,7 @@ Most AI coding workflows skip straight to implementation. That works for small f
 - Building it wrong (no plan)
 - Missing edge cases (no review)
 
-**spec-plan-ship** adds just enough structure to prevent these problems, without slowing you down. Four files. No CLI tools. No dependencies.
+**spec-plan-ship** adds just enough structure to prevent these problems, without slowing you down. Five files. No CLI tools. No dependencies.
 
 ## Installation
 
@@ -49,7 +63,7 @@ Copy the files into your project's `.claude/` directory:
 
 ```bash
 # From your project root
-mkdir -p .claude/skills/feature-spec .claude/skills/feature-plan .claude/skills/tdd .claude/rules docs/specs
+mkdir -p .claude/skills/feature-spec .claude/skills/feature-plan .claude/skills/test-plan .claude/skills/tdd .claude/rules docs/specs
 
 # Copy skills
 curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/feature-spec/SKILL.md \
@@ -57,6 +71,9 @@ curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/s
 
 curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/feature-plan/SKILL.md \
   -o .claude/skills/feature-plan/SKILL.md
+
+curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/test-plan/SKILL.md \
+  -o .claude/skills/test-plan/SKILL.md
 
 curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/tdd/SKILL.md \
   -o .claude/skills/tdd/SKILL.md
@@ -81,7 +98,7 @@ mkdir -p your-project/docs/specs
 
 ### Verify
 
-Open Claude Code in your project. You should see `/feature-spec`, `/feature-plan`, and `/tdd` in your available skills.
+Open Claude Code in your project. You should see `/feature-spec`, `/feature-plan`, `/test-plan`, and `/tdd` in your available skills.
 
 ## Usage
 
@@ -137,23 +154,47 @@ Claude enters **Architect mode** and will:
 - Depends on: Task 1
 ```
 
-### Step 3: Test-Driven Implementation
+### Step 3: Test Plan (Medium+ Features Only)
 
-For each plan task marked `Tests: Yes`:
+For features with cross-layer interactions, multiple consumers, or shared state:
+
+```
+/test-plan .claude/plans/email-notifications-plan.md
+```
+
+Claude enters **QA Architect mode** and will:
+- Read the approved plan's Test Matrix and expand it
+- Discover existing test infrastructure (framework, patterns, fixtures)
+- Design detailed test cases with code-level fixtures and factory functions
+- Add E2E flows for cross-layer integration testing
+- Map which tests can run in parallel
+- Run an adversarial review via subagent before presenting
+- Save to `.claude/plans/{feature-slug}-tests.md`
+
+**For Low complexity features, skip this step** — the Test Matrix embedded in the plan (from Step 2) provides sufficient test design.
+
+**Philosophy: Design tests before code.** When you write tests during implementation, you test what you built. When you design tests upfront, you test what you should have built.
+
+### Step 4: Test-Driven Implementation
+
+For each plan task, `/tdd` consumes the pre-designed test cases:
 
 ```
 /tdd "user can reset password with valid token"
 ```
 
 Claude enters **QA mode** and will:
+- Check the test plan for pre-designed cases (preferred over ad-hoc)
 - Write failing tests FIRST (RED)
 - Implement minimum code to pass (GREEN)
 - Refactor with green tests as safety net (REFACTOR)
 - Cover unit, integration, AND E2E tests against real services
 
+**Parallel execution:** Tasks with no dependency conflicts run concurrently via subagents. Each subagent receives its task + test cases and follows the TDD cycle independently.
+
 **Philosophy: Real over mocked.** Tests run against your actual database, real auth, real file system. Mocks are only for external paid APIs (Stripe, OpenAI, etc.).
 
-### Step 4: Ship
+### Step 5: Ship
 
 Execute remaining tasks from the plan. The workflow rule reminds Claude to follow the process.
 
@@ -185,22 +226,38 @@ Inspired by **Superpowers**' granular task planning and **BMAD**'s adversarial r
   - **Atomic** — one clear thing to do
   - **Ordered** by dependencies (database → API → UI)
   - **Verifiable** — includes how to confirm it works
-- **Adversarial review**: Before presenting the plan, launches a subagent that critiques it for completeness, architecture, ordering, risks, and scope. Incorporates findings automatically.
+- **Test Matrix** (full mode): Maps acceptance criteria to test cases, defines shared fixtures, includes contract-under-test signatures, and adds E2E flows for cross-layer features
+- **Adversarial review**: Before presenting the plan, launches a subagent that critiques it for completeness, architecture, ordering, test coverage, risks, and scope. Incorporates findings automatically.
+
+### `/test-plan` — The QA Architect (Medium+ only)
+
+For features with cross-layer interactions, multiple consumers, or shared state. Expands the plan's Test Matrix into a standalone document.
+
+- Reads the approved plan and corresponding spec
+- Discovers existing test infrastructure (framework, patterns, fixtures)
+- Expands Test Matrix cases into code-level fixtures, factory functions, and custom matchers
+- Designs E2E flows testing cross-task integration boundaries
+- Maps parallelization groups (which test files can run independently)
+- **Adversarial review**: Before presenting, a subagent critiques coverage gaps, test quality, and infrastructure assumptions
+- Produces a test plan that `/tdd` consumes during implementation
+
+Not needed for Low complexity features — the plan's embedded Test Matrix is sufficient.
 
 ### `/tdd` — The QA Engineer
 
 Inspired by **Superpowers**' TDD enforcement and the principle that real tests beat mocked tests.
 
+- **Consumes test artifacts** — checks for a full test plan first, then the plan's Test Matrix, then designs ad-hoc
+- **Pure function override** — tests pure functions even when the plan marks a task `Tests: No`
 - Follows RED → GREEN → REFACTOR strictly
 - Tests at all levels: unit, integration, E2E
 - **E2E tests are mandatory for user-facing features** — not optional
 - Tests against real services by default (database, auth, file system)
 - Only mocks external paid APIs (Stripe, OpenAI, etc.)
-- Integrates with `/feature-plan` — picks up tasks marked `Tests: Yes`
 
 ### `feature-workflow.md` — The Orchestrator
 
-A lightweight rule that reminds Claude to follow the flow when implementing non-trivial changes. Skips automatically for config tweaks, typo fixes, and one-line changes.
+A tiered rule that reminds Claude to follow the flow when implementing non-trivial changes. Test depth scales with feature complexity: Test Matrix for all features, full test plan for Medium+. Skips automatically for config tweaks, typo fixes, and one-line changes. Supports parallel execution of independent tasks via subagents.
 
 ## Customization
 
@@ -259,6 +316,24 @@ The adversarial review in `/feature-plan` uses a Claude Code subagent (not a sep
 ### Why Scalable Specs?
 
 Spec-Kit's full workflow includes constitution, specification, plan, tasks, and implementation phases with a CLI tool. We found that for solo devs, a spec that scales to the feature's complexity works best — simple changes get brief specs, complex features get comprehensive specs with full decision context. The overhead of managing multiple artifact types isn't worth it when you're the only stakeholder, but under-documenting complex decisions leads to "why did we do this?" questions later.
+
+## Community Integrations
+
+spec-plan-ship is tool-agnostic by design — it works with Claude Code alone. But if you use other AI coding tools, you can add external review agents for diversity of opinion:
+
+### OpenCode (cross-model review)
+
+If you have [OpenCode](https://opencode.ai) installed, you can send plans, code, and test artifacts to a different model for independent review:
+
+| Agent | What It Reviews | Example |
+|-------|----------------|---------|
+| `plan-reviewer` | Implementation plans | `opencode run --agent plan-reviewer --dir . "Review this plan" -f .claude/plans/my-plan.md` |
+| `readonly-code-reviewer` | Code changes | `opencode run --agent readonly-code-reviewer --dir . "Review recent changes"` |
+| `test-reviewer` | Test plans and test suites | `opencode run --agent test-reviewer --dir . "Review test coverage" -f .claude/plans/my-tests.md` |
+
+These agents operate in read-only mode — they analyze and report, never modify files. The value is getting a second opinion from a different model (GPT, Gemini, etc.) before implementing.
+
+To set up, create agent files in `~/.config/opencode/agents/agent/` — see [OpenCode docs](https://opencode.ai) for agent configuration.
 
 ## Credits & Inspiration
 
