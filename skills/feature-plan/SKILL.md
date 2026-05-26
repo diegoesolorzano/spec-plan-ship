@@ -51,7 +51,16 @@ Read the relevant files to understand existing patterns:
 
 4. **Type system** — Identify relevant existing types, interfaces, and module boundaries that the new code must integrate with.
 
-### Step 4: Design the Task Breakdown
+### Step 4: Define the Sprint Goal
+
+Write the `## Sprint Goal` section for the plan:
+
+1. **Goal statement** — Synthesize the spec's Problem Statement into a 1-2 sentence outcome. Write it as a completion criterion: what is true when this sprint is done? An autonomous agent reading only this sentence should understand what it's building toward.
+2. **Done when** — Pull each acceptance criterion from the spec's `## Acceptance Criteria` section as a checkbox item. Add "All tests pass" and "No regressions in existing functionality" as final items. For Medium+ features, also add "Agent docs updated (rules/skills/CLAUDE.md)" if applicable.
+
+Keep it concise — the goal is a reference target, not a restatement of the full spec.
+
+### Step 5: Design the Task Breakdown
 
 Break the implementation into tasks. Each task should be:
 - **2-5 minutes** of focused work
@@ -79,6 +88,18 @@ After defining all tasks, add a **Test Matrix** section (full mode only):
 ## Overview
 
 1-2 sentences: architectural approach and key decisions.
+
+## Sprint Goal
+
+> {1-2 sentence goal statement — the outcome this sprint delivers, written so an autonomous agent knows when to stop.}
+
+### Done when
+
+- [ ] {Acceptance criterion from spec — Given/When/Then or declarative}
+- [ ] {Acceptance criterion}
+- [ ] ...
+- [ ] All tests pass
+- [ ] No regressions in existing functionality
 
 ## Shared Types
 
@@ -162,6 +183,15 @@ export async function doThing(input: ExampleInput): Promise<ExampleOutput>;
 
 **Date:** YYYY-MM-DD
 
+## Sprint Goal
+
+> {1-sentence goal — what "done" looks like.}
+
+### Done when
+
+- [ ] {Key acceptance criterion}
+- [ ] All tests pass
+
 ## Tasks
 
 ### Task 1: {Title}
@@ -171,7 +201,7 @@ export async function doThing(input: ExampleInput): Promise<ExampleOutput>;
 - **Depends on:** None
 ```
 
-### Step 5: Adversarial Plan Review
+### Step 6: Adversarial Plan Review
 
 **Before presenting the plan to the user**, save the draft to `.claude/plans/{feature-slug}-plan.md` and launch a subagent to review it adversarially.
 
@@ -245,13 +275,13 @@ After receiving the subagent's review:
 4. Update the draft in `.claude/plans/{feature-slug}-plan.md`
 5. Add a `## Review Notes` section at the end of the plan summarizing what changed
 
-### Step 6: Present for Approval
+### Step 7: Present for Approval
 
 Show the complete plan to the user. Mention that it was reviewed and improved by the adversarial agent. Ask:
 - "Does this approach make sense?"
 - "Want to adjust the scope, task order, or any signatures?"
 
-### Step 7: Save the Plan
+### Step 8: Save the Plan
 
 Once approved, update status in `.claude/plans/{feature-slug}-plan.md` if needed.
 
