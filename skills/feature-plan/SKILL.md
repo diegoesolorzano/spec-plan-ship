@@ -285,7 +285,17 @@ Show the complete plan to the user. Mention that it was reviewed and improved by
 
 Once approved, update status in `.claude/plans/{feature-slug}-plan.md` if needed.
 
-Suggest next step: "Ready to implement? I'll work through the tasks in order, using the signatures as contracts."
+#### Next Step Guidance (MANDATORY)
+
+Determine what comes next based on the feature-workflow rule. **Never suggest jumping to implementation directly.**
+
+- **If the plan is full mode (non-trivial / Medium+ complexity):**
+  Suggest: "Next step: `/test-plan .claude/plans/{slug}-plan.md` to expand the Test Matrix into a full test suite before implementing."
+
+- **If the plan is lite mode (trivial / Low complexity):**
+  Display the `## Sprint Goal` section from the plan, then suggest: "Ready to implement? I'll work through the tasks using `/tdd`."
+
+The feature-workflow sequence is: spec → plan → **test-plan (Medium+)** → **Sprint Goal display** → implement with /tdd. Skipping test-plan for Medium+ features violates the workflow.
 
 ## Guidelines
 

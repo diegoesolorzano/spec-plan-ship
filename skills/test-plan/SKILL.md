@@ -172,7 +172,13 @@ Show the complete test plan. Ask:
 
 Once approved, save to `.claude/plans/{feature-slug}-tests.md`.
 
-Suggest next step: "Ready to implement? I'll work through the plan tasks, using `/tdd` with these pre-designed test cases."
+#### Display Sprint Goal and Suggest Implementation (MANDATORY)
+
+After saving the test plan, display the `## Sprint Goal` section from the implementation plan (`.claude/plans/{slug}-plan.md`). Quote it verbatim — this is the acceptance criteria the agent must satisfy during implementation.
+
+Then suggest: "Sprint Goal shown above. Ready to implement? I'll work through the plan tasks using `/tdd` with these pre-designed test cases."
+
+The feature-workflow sequence is: spec → plan → test-plan → **Sprint Goal display** → implement with /tdd. This step completes the planning phase.
 
 ## Test Plan Template
 
