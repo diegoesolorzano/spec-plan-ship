@@ -10,7 +10,7 @@ description: >
   via subagent before presenting. Use after /feature-spec or directly for
   small-medium changes.
 argument-hint: [spec-file-path]
-allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Agent
+allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Agent, TaskCreate, TaskUpdate
 model: opus
 ---
 
@@ -296,6 +296,22 @@ Determine what comes next based on the feature-workflow rule. **Never suggest ju
   Display the `## Sprint Goal` section from the plan, then suggest: "Ready to implement? I'll work through the tasks using `/tdd`."
 
 The feature-workflow sequence is: spec → plan → **test-plan (Medium+)** → **Sprint Goal display** → implement with /tdd. Skipping test-plan for Medium+ features violates the workflow.
+
+#### Task Tracking (full mode only — MANDATORY)
+
+After the plan is approved, create trackable tasks for the implementation phase:
+
+1. For each task in the plan, call `TaskCreate` with:
+   - **subject:** "Task N: {Task Title}" (from the plan)
+   - **description:** The "Do" block content from that task
+   - **activeForm:** "Implementing Task N: {Title}"
+
+2. After all tasks are created, set up dependencies with `TaskUpdate`:
+   - For each task that has `Depends on: Task M`, call `TaskUpdate` with `addBlockedBy: ["{task-M-id}"]`
+
+3. Do NOT mark any task as `in_progress` — that happens when `/tdd` starts each task during implementation.
+
+This gives the implementing agent (or parallel subagents) a live progress tracker. Each subagent should `TaskUpdate` its assigned task to `in_progress` when starting and `completed` when done.
 
 ## Guidelines
 
