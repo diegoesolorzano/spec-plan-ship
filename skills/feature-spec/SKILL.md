@@ -175,7 +175,28 @@ Once approved, save to `docs/specs/{YYYY-MM-DD}-{feature-slug}.md`.
 
 Update the status to `Approved`.
 
-Suggest next step: "Ready to plan implementation? Use `/feature-plan docs/specs/{feature-slug}.md`"
+#### Handoff Brief (MANDATORY)
+
+After saving, present a compact summary suitable for external audit or async review:
+
+```
+## Spec Brief
+
+**Feature:** {title}
+**Spec:** `docs/specs/{YYYY-MM-DD}-{slug}.md`
+**Problem:** {1 sentence — who is affected and what's broken/missing}
+**Key decisions:**
+- {decision}: {choice} — because {reason}
+- ...
+**In scope:** {bullet list of what ships}
+**Out of scope:** {bullet list of what doesn't}
+**Top risks:** {1-2 most relevant risks with mitigations}
+**Next:** `/feature-plan docs/specs/{slug}.md`
+```
+
+This is a reformatting of information already in the spec — not new content. Its purpose is to give reviewers a self-contained snapshot without opening the file.
+
+Suggest next step: "Ready to plan implementation? Use `/feature-plan docs/specs/{slug}.md`"
 
 ## Guidelines
 
