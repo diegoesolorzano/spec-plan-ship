@@ -121,6 +121,27 @@ Not mockups — words describing the experience.
 
 What this feature explicitly does NOT include and why.
 
+## Agent Readiness (Medium+ only)
+
+Answer each question. If the answer is "no" or "N/A", skip it.
+
+### Human Documentation
+- **README.md**: Does this feature add commands, env vars, setup steps, or concepts that a human contributor needs to know?
+
+### Agent Documentation
+- **AGENTS.md** (+ CLAUDE.md symlink): What does a cold agent — with zero prior context — need to discover and correctly use this feature? Keep root minimal; point to nested docs for detail (progressive disclosure).
+
+### Rules
+- Does this feature introduce constraints an agent must always respect? (e.g., "never call X without Y", "all routes in this module must Z")
+- Does it introduce path-specific conventions that only apply when touching certain files?
+
+### Skills
+- Does this feature have a repeatable workflow that an agent or user should invoke on demand?
+- Does it introduce process-specific guidance that is too heavy to always load but must apply conditionally? (e.g., domain-specific build steps, deploy procedures, conditional validation logic)
+
+### Discoverability Check
+Can a future agent — with zero context from this conversation — find and correctly use this feature by reading project docs alone? If not, what's missing?
+
 ## Risks
 
 For each risk:
