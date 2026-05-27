@@ -179,6 +179,7 @@ After saving the test plan, display the Sprint Goal with artifact pointers so th
 ```
 **Plan:** `.claude/plans/{slug}-plan.md`
 **Tests:** `.claude/plans/{slug}-tests.md`
+**Method:** `/tdd` (RED → GREEN → REFACTOR for each task)
 
 ## Sprint Goal
 
@@ -188,7 +189,9 @@ After saving the test plan, display the Sprint Goal with artifact pointers so th
 - [ ] {criteria from plan}
 ```
 
-Then suggest: "Sprint Goal and artifact references shown above. Ready to implement? I'll work through the plan tasks using `/tdd` with these pre-designed test cases."
+Then suggest: "Sprint Goal and artifact references shown above. Ready to implement? I'll invoke `/tdd` for each task — writing the failing test first, then implementing."
+
+**IMPORTANT:** Implementation MUST use the `/tdd` skill regardless of how the user phrases the request ("implement", "build it", "go ahead", etc.). The `/tdd` skill consumes the test cases from this test plan. Skipping it means tests won't be written first, defeating the purpose of the test plan phase.
 
 The feature-workflow sequence is: spec → plan → test-plan → **Sprint Goal display** → implement with /tdd. This step completes the planning phase.
 
