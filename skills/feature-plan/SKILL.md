@@ -293,7 +293,14 @@ Determine what comes next based on the feature-workflow rule. **Never suggest ju
   Suggest: "Next step: `/test-plan .claude/plans/{slug}-plan.md` to expand the Test Matrix into a full test suite before implementing."
 
 - **If the plan is lite mode (trivial / Low complexity):**
-  Display the `## Sprint Goal` section from the plan, then suggest: "Ready to implement? I'll work through the tasks using `/tdd`."
+  Display the Sprint Goal with the plan path as reference:
+  ```
+  **Plan:** `.claude/plans/{slug}-plan.md`
+
+  ## Sprint Goal
+  > {quoted from plan}
+  ```
+  Then suggest: "Ready to implement? I'll work through the tasks using `/tdd`."
 
 The feature-workflow sequence is: spec → plan → **test-plan (Medium+)** → **Sprint Goal display** → implement with /tdd. Skipping test-plan for Medium+ features violates the workflow.
 
