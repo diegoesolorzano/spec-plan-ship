@@ -24,7 +24,7 @@ During step 5, tasks that have no dependency conflicts (`Depends on: None` or al
 
 1. Read the plan's dependency graph
 2. Identify all tasks whose dependencies are satisfied
-3. Launch independent tasks concurrently using the Agent tool
+3. Launch independent tasks concurrently using the Agent tool with `isolation: 'worktree'` — each subagent gets its own git worktree so concurrent tasks never write-conflict on the same files. **git-crypt caveat:** the Agent tool's worktree does NOT copy the git-crypt key; on encrypted repos, copy `.git/git-crypt/keys/default` into each subagent worktree (see the `worktree-add` skill) or omit `isolation: 'worktree'` for that repo to avoid unreadable encrypted files.
 4. Wait for completion, then identify the next batch of ready tasks
 5. Repeat until all tasks are done
 
@@ -34,6 +34,8 @@ Each parallel subagent receives:
 - Instruction to follow `/tdd` cycle (RED → GREEN → REFACTOR)
 
 Tasks with unmet dependencies wait until their blockers complete.
+
+**Full-feature isolation (opt-in, manual):** to work a feature off `main` or run two features in parallel, use the `worktree-add` skill — it handles the git-crypt key copy and is invoked by you, not as an automatic step.
 
 ## Artifacts Location
 
