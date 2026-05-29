@@ -122,9 +122,9 @@ You are a Senior QA Engineer reviewing a test plan. Your job is to find gaps
 in test coverage. Be adversarial — assume the plan misses important cases.
 
 Read these files:
-1. The test plan draft: .claude/plans/{slug}-tests.md
-2. The implementation plan: .claude/plans/{slug}-plan.md
-3. The feature spec: docs/specs/{slug}.md
+1. The test plan draft: .claude/plans/{id}-tests.md
+2. The implementation plan: .claude/plans/{id}-plan.md
+3. The feature spec: docs/specs/{id}.md
 
 Then critique on these dimensions:
 
@@ -170,15 +170,15 @@ Show the complete test plan. Ask:
 
 ### Step 9: Save the Test Plan
 
-Once approved, save to `.claude/plans/{feature-slug}-tests.md`.
+Once approved, save to `.claude/plans/{id}-tests.md`.
 
 #### Display Sprint Goal and Suggest Implementation (MANDATORY)
 
 After saving the test plan, display the Sprint Goal with artifact pointers so the implementing agent knows where everything lives:
 
 ```
-**Plan:** `.claude/plans/{slug}-plan.md`
-**Tests:** `.claude/plans/{slug}-tests.md`
+**Plan:** `.claude/plans/{id}-plan.md`
+**Tests:** `.claude/plans/{id}-tests.md`
 **Method:** `/tdd` (RED → GREEN → REFACTOR for each task)
 
 ## Sprint Goal
@@ -200,9 +200,12 @@ The feature-workflow sequence is: spec → plan → test-plan → **Sprint Goal 
 ```markdown
 # Test Plan: {Feature Title}
 
-**Plan:** .claude/plans/{slug}-plan.md
-**Spec:** docs/specs/{slug}.md
+**Feature ID:** {id}
+**Repo:** {target repo directory name}
+**Issue:** {repo}#{n} | none
+**Upstream:** .claude/plans/{id}-plan.md
 **Date:** YYYY-MM-DD
+**Status:** Tested
 **Test framework:** {vitest | jest | pytest | phpunit | etc.}
 
 ## Test Infrastructure
