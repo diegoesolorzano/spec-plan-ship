@@ -9,7 +9,6 @@ description: >
   or before implementing any task marked for testing.
 argument-hint: [task-description or plan-file-path]
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, AskUserQuestion
-model: sonnet
 ---
 
 # Test-Driven Development
