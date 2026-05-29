@@ -112,7 +112,7 @@ Claude enters **PM mode** and will:
 - Ask clarifying questions (Socratic method, max 3 rounds)
 - Scan your codebase for impacted systems
 - Generate a spec with requirements, acceptance criteria, and impact analysis
-- Save to `docs/specs/{feature-slug}.md`
+- Save to `docs/specs/{id}.md`
 
 **Example:**
 ```
@@ -137,7 +137,7 @@ Claude enters **Architect mode** and will:
 - Explore your codebase for existing patterns to reuse
 - Break implementation into 2-5 minute tasks with exact file paths
 - Run an adversarial review via subagent before presenting
-- Save to `.claude/plans/{feature-slug}-plan.md`
+- Save to `.claude/plans/{id}-plan.md`
 
 **Example output:**
 ```markdown
@@ -169,7 +169,7 @@ Claude enters **QA Architect mode** and will:
 - Add E2E flows for cross-layer integration testing
 - Map which tests can run in parallel
 - Run an adversarial review via subagent before presenting
-- Save to `.claude/plans/{feature-slug}-tests.md`
+- Save to `.claude/plans/{id}-tests.md`
 
 **For Low complexity features, skip this step** — the Test Matrix embedded in the plan (from Step 2) provides sufficient test design.
 

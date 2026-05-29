@@ -45,11 +45,17 @@ Reference specific file paths in the spec.
 
 The spec should be **as detailed as the feature requires**. A simple endpoint gets a short spec. A feature that involved evaluating multiple approaches, analyzing production data, or debating architecture gets a comprehensive spec that captures all of that context.
 
-Use the template below. Include all sections that apply — skip sections that don't:
+Use the template below. Include all sections that apply — skip sections that don't.
+
+The spec MUST open with the cross-link header block (after the optional `# ` H1), one field per line in this exact order: **Feature ID** (the `{id}`), **Repo** (the target repo's directory name), **Issue** (`{repo}#{n}` or `none`), **Upstream** (`none` for a spec — it has no upstream), **Date** (`YYYY-MM-DD`), **Status** (one of `Draft`, `Approved`, `Planned`, `Tested`, `Implementing`, `InReview`, `Shipped` — a fresh spec is `Draft`).
 
 ```markdown
 # Feature: {Title}
 
+**Feature ID:** {id}
+**Repo:** {target repo directory name}
+**Issue:** {repo}#{n} | none
+**Upstream:** none
 **Date:** YYYY-MM-DD
 **Status:** Draft
 
@@ -171,7 +177,7 @@ Show the complete spec to the user. Ask:
 
 ### Step 5: Save the Spec
 
-Once approved, save to `docs/specs/{YYYY-MM-DD}-{feature-slug}.md`.
+Once approved, save to `docs/specs/{id}.md`.
 
 Update the status to `Approved`.
 
@@ -183,7 +189,7 @@ After saving, present a compact summary suitable for external audit or async rev
 ## Spec Brief
 
 **Feature:** {title}
-**Spec:** `docs/specs/{YYYY-MM-DD}-{slug}.md`
+**Spec:** `docs/specs/{id}.md`
 **Problem:** {1 sentence — who is affected and what's broken/missing}
 **Key decisions:**
 - {decision}: {choice} — because {reason}
@@ -191,12 +197,12 @@ After saving, present a compact summary suitable for external audit or async rev
 **In scope:** {bullet list of what ships}
 **Out of scope:** {bullet list of what doesn't}
 **Top risks:** {1-2 most relevant risks with mitigations}
-**Next:** `/feature-plan docs/specs/{slug}.md`
+**Next:** `/feature-plan docs/specs/{id}.md`
 ```
 
 This is a reformatting of information already in the spec — not new content. Its purpose is to give reviewers a self-contained snapshot without opening the file.
 
-Suggest next step: "Ready to plan implementation? Use `/feature-plan docs/specs/{slug}.md`"
+Suggest next step: "Ready to plan implementation? Use `/feature-plan docs/specs/{id}.md`"
 
 ## Guidelines
 

@@ -41,6 +41,6 @@ Tasks with unmet dependencies wait until their blockers complete.
 
 | Artifact | Path | Created By |
 |----------|------|------------|
-| Feature specs | `docs/specs/{slug}.md` | `/feature-spec` |
-| Implementation plans | `.claude/plans/{slug}-plan.md` | `/feature-plan` |
-| Test plans | `.claude/plans/{slug}-tests.md` | `/test-plan` |
+| Feature specs | `docs/specs/{id}.md` | `/feature-spec` |
+| Implementation plans | `.claude/plans/{id}-plan.md` | `/feature-plan` |
+| Test plans | `.claude/plans/{id}-tests.md` | `/test-plan` |
