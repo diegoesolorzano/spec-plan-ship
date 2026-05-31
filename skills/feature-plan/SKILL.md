@@ -299,7 +299,7 @@ Once approved, update status in `.claude/plans/{id}-plan.md` if needed.
 Determine what comes next based on the feature-workflow rule. **Never suggest jumping to implementation directly.**
 
 - **If the plan is full mode (non-trivial / Medium+ complexity):**
-  Suggest: "Next step: `/test-plan .claude/plans/{id}-plan.md` to expand the Test Matrix into a full test suite before implementing."
+  Suggest: "Next step: `/test-plan .claude/plans/{id}-plan.md` to expand the Test Matrix into a full test suite before implementing. If this feature changes a real product workflow, run `/operational-test-plan .claude/plans/{id}-plan.md` after `/test-plan`."
 
 - **If the plan is lite mode (trivial / Low complexity):**
   Display the Sprint Goal with the plan path and method as reference:
@@ -314,7 +314,7 @@ Determine what comes next based on the feature-workflow rule. **Never suggest ju
 
   **IMPORTANT:** Implementation MUST use the `/tdd` skill regardless of how the user phrases the request ("implement", "build it", "go ahead", etc.). Skipping `/tdd` violates the feature-workflow.
 
-The feature-workflow sequence is: spec → plan → **test-plan (Medium+)** → **Sprint Goal display** → implement with /tdd. Skipping test-plan for Medium+ features violates the workflow.
+The feature-workflow sequence is: spec → plan → **test-plan (Medium+)** → **operational-test-plan when workflow behavior changes** → **Sprint Goal display** → implement with /tdd. Skipping test-plan for Medium+ features violates the workflow. Skipping operational-test-plan for Medium+ workflow features violates the workflow unless the user explicitly accepts the risk.
 
 #### Task Tracking (full mode only — MANDATORY)
 

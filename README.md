@@ -13,8 +13,11 @@ Born from combining the best ideas of [BMAD Method](https://docs.bmad-method.org
 | `skills/feature-spec/SKILL.md` | Skill | **PM + Tech Lead mode** — Defines WHAT, WHY, and key design decisions. Socratic questioning, acceptance criteria, design decisions, risks, deploy checklist. Detail scales to complexity. |
 | `skills/feature-plan/SKILL.md` | Skill | **Architect mode** — Defines HOW, WHERE, and in what ORDER. Granular tasks with adversarial review. Includes an embedded Test Matrix for test design. |
 | `skills/test-plan/SKILL.md` | Skill | **QA Architect mode** (Medium+ features) — Expands the plan's Test Matrix into a comprehensive standalone test suite with E2E flows, fixtures, factories, and parallelization groups. |
+| `skills/operational-test-plan/SKILL.md` | Skill | **Operational QA mode** — Defines realistic business-flow scenarios and ship gates for workflow features. Proves the product works in operation, not just that code paths pass. |
 | `skills/tdd/SKILL.md` | Skill | **QA mode** — RED-GREEN-REFACTOR cycle. Consumes test plan or Test Matrix. Tests pure functions even when marked `Tests: No`. |
-| `rules/feature-workflow.md` | Rule | **Orchestrator** — Tiered workflow: spec → plan (with Test Matrix) → test-plan (Medium+ only) → implement → ship. Supports parallel task execution. |
+| `rules/feature-workflow.md` | Rule | **Orchestrator** — Tiered workflow: spec → plan (with Test Matrix) → test-plan → operational-test-plan when needed → implement → validate → ship. Supports parallel task execution. |
+| `rules/operational-functional-testing.md` | Rule | **Ship gate** — Requires operational functional tests for Medium+ features that change real product workflows. |
+| `rules/documentation-scope.md` | Rule | **Documentation routing** — Clarifies when to update README, docs, AGENTS, rules, skills, issues, or changelogs. |
 
 ## The Flow
 
@@ -26,15 +29,18 @@ Born from combining the best ideas of [BMAD Method](https://docs.bmad-method.org
                            Adversarial Review (subagent)
                                ↓
 3. /test-plan [plan]      →  Full test suite (Medium+ only)
-      ↓                        Low complexity? Skip — Test Matrix is enough
-                           Adversarial Review (subagent)
-                               ↓
-4. /tdd [task]            →  Write tests from test plan or Test Matrix
-      ↓                        (RED → GREEN → REFACTOR)
-      ↓                        Independent tasks run in parallel
-5. Implement              →  Execute tasks, tests guide you
-                               ↓
-6. Review → Commit        →  Ship it
+       ↓                        Low complexity? Skip — Test Matrix is enough
+                            Adversarial Review (subagent)
+                                ↓
+4. /operational-test-plan →  Operational scenarios for workflow features
+       ↓                        Skip when no real product workflow changes
+                                ↓
+5. /tdd [task]            →  Write tests from test plan or Test Matrix
+       ↓                        (RED → GREEN → REFACTOR)
+       ↓                        Independent tasks run in parallel
+6. Implement              →  Execute tasks, tests guide you
+                                ↓
+7. Validate ops → Review  →  Commit and ship
 ```
 
 ### When to use `/test-plan` vs the embedded Test Matrix
@@ -45,6 +51,12 @@ Born from combining the best ideas of [BMAD Method](https://docs.bmad-method.org
 | **Medium+** (cross-layer, shared state, multiple consumers) | `/test-plan` | E2E flows, cross-task integration tests, shared fixtures at code level |
 | **Visual/creative** (canvas, animations) | `/test-plan` | Independently identifies testable pure functions even when tasks say `Tests: No` |
 
+### When to use `/operational-test-plan`
+
+Use it after `/test-plan` when a feature changes a real operating workflow: business capability, conversational pipeline, admin/operator handoff, webhook, queue, cron, external integration, state machine, or multi-step user journey.
+
+Technical E2E asks "does the UI/API path run?" Operational testing asks "does the product actually work for the business scenario?" A restaurant order flow, for example, is not shipped because the menu API and order page pass; it is shipped when realistic customer messages create the right pending order, the operator can act on it, and the customer receives the right outcome.
+
 ## Why This Exists
 
 Most AI coding workflows skip straight to implementation. That works for small fixes, but for anything non-trivial, you end up:
@@ -53,7 +65,7 @@ Most AI coding workflows skip straight to implementation. That works for small f
 - Building it wrong (no plan)
 - Missing edge cases (no review)
 
-**spec-plan-ship** adds just enough structure to prevent these problems, without slowing you down. Five files. No CLI tools. No dependencies.
+**spec-plan-ship** adds just enough structure to prevent these problems, without slowing you down. Skills and rules only. No CLI tools. No dependencies.
 
 ## Installation
 
@@ -63,7 +75,7 @@ Copy the files into your project's `.claude/` directory:
 
 ```bash
 # From your project root
-mkdir -p .claude/skills/feature-spec .claude/skills/feature-plan .claude/skills/test-plan .claude/skills/tdd .claude/rules docs/specs
+mkdir -p .claude/skills/feature-spec .claude/skills/feature-plan .claude/skills/test-plan .claude/skills/operational-test-plan .claude/skills/tdd .claude/rules docs/specs
 
 # Copy skills
 curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/feature-spec/SKILL.md \
@@ -75,12 +87,21 @@ curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/s
 curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/test-plan/SKILL.md \
   -o .claude/skills/test-plan/SKILL.md
 
+curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/operational-test-plan/SKILL.md \
+  -o .claude/skills/operational-test-plan/SKILL.md
+
 curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/tdd/SKILL.md \
   -o .claude/skills/tdd/SKILL.md
 
 # Copy rule
 curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/rules/feature-workflow.md \
   -o .claude/rules/feature-workflow.md
+
+curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/rules/operational-functional-testing.md \
+  -o .claude/rules/operational-functional-testing.md
+
+curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/rules/documentation-scope.md \
+  -o .claude/rules/documentation-scope.md
 ```
 
 ### Manual Install
@@ -98,7 +119,7 @@ mkdir -p your-project/docs/specs
 
 ### Verify
 
-Open Claude Code in your project. You should see `/feature-spec`, `/feature-plan`, `/test-plan`, and `/tdd` in your available skills.
+Open Claude Code in your project. You should see `/feature-spec`, `/feature-plan`, `/test-plan`, `/operational-test-plan`, and `/tdd` in your available skills.
 
 ## Usage
 
@@ -175,7 +196,21 @@ Claude enters **QA Architect mode** and will:
 
 **Philosophy: Design tests before code.** When you write tests during implementation, you test what you built. When you design tests upfront, you test what you should have built.
 
-### Step 4: Test-Driven Implementation
+### Step 4: Operational Test Planning
+
+For Medium+ workflow features, add the operational gate before implementation:
+
+```
+/operational-test-plan .claude/plans/email-notifications-plan.md
+```
+
+Claude enters **Operational QA mode** and will:
+- Identify the real business capabilities the feature must prove
+- Define realistic actor/system scenarios across state, UI, side effects, and handoffs
+- Separate automated operational tests, staging smoke, manual acceptance, and future automation
+- Save to `.claude/plans/{id}-ops.md`
+
+### Step 5: Test-Driven Implementation
 
 For each plan task, `/tdd` consumes the pre-designed test cases:
 
@@ -194,9 +229,9 @@ Claude enters **QA mode** and will:
 
 **Philosophy: Real over mocked.** Tests run against your actual database, real auth, real file system. Mocks are only for external paid APIs (Stripe, OpenAI, etc.).
 
-### Step 5: Ship
+### Step 6: Ship
 
-Execute remaining tasks from the plan. The workflow rule reminds Claude to follow the process.
+Execute remaining tasks from the plan. For Medium+ workflow features, run the blocking scenarios from `.claude/plans/{id}-ops.md` before marking the feature shipped.
 
 ## What Each Piece Does
 
@@ -243,6 +278,18 @@ For features with cross-layer interactions, multiple consumers, or shared state.
 
 Not needed for Low complexity features — the plan's embedded Test Matrix is sufficient.
 
+### `/operational-test-plan` — The Operational QA Architect
+
+For Medium+ features that change real product workflows. It proves the business capability works across actors, state, side effects, and handoffs.
+
+- Reads the spec, plan, and test plan when present
+- Identifies operational capabilities and stable test boundaries
+- Designs realistic scenarios across users, operators/admins, automation, and integrations
+- Separates automated operational tests, staging smoke, manual acceptance, and future automation
+- Produces `.claude/plans/{id}-ops.md` with blocking ship gate evidence
+
+Not needed for isolated code changes with no operational behavior.
+
 ### `/tdd` — The QA Engineer
 
 Inspired by **Superpowers**' TDD enforcement and the principle that real tests beat mocked tests.
@@ -257,7 +304,7 @@ Inspired by **Superpowers**' TDD enforcement and the principle that real tests b
 
 ### `feature-workflow.md` — The Orchestrator
 
-A tiered rule that reminds Claude to follow the flow when implementing non-trivial changes. Test depth scales with feature complexity: Test Matrix for all features, full test plan for Medium+. Skips automatically for config tweaks, typo fixes, and one-line changes. Supports parallel execution of independent tasks via subagents.
+A tiered rule that reminds Claude to follow the flow when implementing non-trivial changes. Test depth scales with feature complexity: Test Matrix for all features, full test plan for Medium+, operational test plan for workflow features. Skips automatically for config tweaks, typo fixes, and one-line changes. Supports parallel execution of independent tasks via subagents.
 
 ## Customization
 
@@ -277,17 +324,17 @@ The skills reference generic paths. Update them to match your project structure:
 
 ### Extending the Flow
 
-The workflow includes spec, plan, TDD, and implementation. You can add more skills for review and commit:
+The workflow includes spec, plan, test planning, operational validation, TDD, and implementation. You can add more skills for review and commit:
 
 ```markdown
-# In rules/feature-workflow.md — add after step 3:
-4. **Review** — Use `/code-review` for quality check
-5. **Commit** — Use `/semantic-commit` for conventional commits
+# In rules/feature-workflow.md — add near the end:
+8. **Review** — Use `/code-review` for quality check
+9. **Commit** — Use `/semantic-commit` for conventional commits
 ```
 
 ### Changing the Model
 
-Both skills default to `model: opus` for maximum reasoning quality. You can change this:
+Planning skills default to `model: opus` for maximum reasoning quality. You can change this:
 
 ```yaml
 # In SKILL.md frontmatter

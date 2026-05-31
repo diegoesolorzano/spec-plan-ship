@@ -10,3 +10,8 @@ Registro de cambios del toolkit spec-plan-ship (spec, plan, test, ship).
 * **Tipo:** Feature
 * **Cambios:** Reforzar integridad del flujo workflow, agregar task tracking en feature-plan y seccion Agent Readiness en feature-spec
 * **Detalle:** Ver [features/2026-05-26-workflow-integrity-and-task-tracking.md](./features/2026-05-26-workflow-integrity-and-task-tracking.md)
+
+### [v0.3.0] (Minor) - 2026-05-31
+* **Tipo:** Feature
+* **Cambios:** Agregar protocolo publico de testing funcional operativo para validar workflows Medium+ antes de envio
+* **Detalle:** Ver [features/2026-05-31-operational-functional-testing.md](./features/2026-05-31-operational-functional-testing.md)

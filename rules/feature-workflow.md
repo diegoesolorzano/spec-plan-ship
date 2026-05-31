@@ -11,16 +11,18 @@ When implementing a new feature or significant change (not a typo or 1-line fix)
 1. **Spec first** — Use `/feature-spec` to define WHAT and WHY
 2. **Plan second** — Use `/feature-plan` to define HOW and WHERE (includes a Test Matrix and Sprint Goal in full mode)
 3. **Test plan (Medium+ only)** — Use `/test-plan` for features with cross-layer interactions, multiple consumers, or shared state. Expands the plan's Test Matrix into a comprehensive standalone test suite with E2E flows, fixtures, and parallelization groups. Skip for Low complexity features — the plan's embedded Test Matrix is sufficient.
-4. **Sprint Goal** — Before implementing, display the Sprint Goal from the plan. This is the acceptance criteria the agent must satisfy autonomously. Show it after the last planning artifact: after `/test-plan` if one was created, otherwise after `/feature-plan`. Format: quote the `## Sprint Goal` section from the plan file. Optional but recommended — gives agents a clear stopping criterion.
-5. **Implement with TDD** — For each plan task, use `/tdd` (which consumes the test plan or Test Matrix) to write tests first, then implement. Pure functions get tests even if the task is marked `Tests: No`.
-6. **Review** — Review changes before committing
-7. **Commit** — Create atomic, well-described commits
+4. **Operational test plan (Medium+ workflow features)** — Use `/operational-test-plan` when the feature changes a real product workflow: business capability, pipeline, agent behavior, operator/admin handoff, webhook, queue, cron, external integration, state machine, or multi-step user journey. This defines the blocking scenarios that prove the product works in realistic operation.
+5. **Sprint Goal** — Before implementing, display the Sprint Goal from the plan. This is the acceptance criteria the agent must satisfy autonomously. Show it after the last planning artifact: after `/operational-test-plan` if one was created, otherwise after `/test-plan` or `/feature-plan`. Format: quote the `## Sprint Goal` section from the plan file. Optional but recommended — gives agents a clear stopping criterion.
+6. **Implement with TDD** — For each plan task, use `/tdd` (which consumes the test plan or Test Matrix) to write tests first, then implement. Pure functions get tests even if the task is marked `Tests: No`.
+7. **Operational validation** — Before marking a Medium+ workflow feature shipped, execute the blocking scenarios from `.claude/plans/{id}-ops.md` or record explicit user acceptance of the risk.
+8. **Review** — Review changes before committing
+9. **Commit** — Create atomic, well-described commits
 
-Skip to step 5 for trivial changes (config tweaks, copy edits, single-file fixes).
+Skip to step 6 for trivial changes (config tweaks, copy edits, single-file fixes).
 
 ## Parallel Execution
 
-During step 5, tasks that have no dependency conflicts (`Depends on: None` or all dependencies already completed) SHOULD be executed in parallel via subagents. The implementation agent should:
+During step 6, tasks that have no dependency conflicts (`Depends on: None` or all dependencies already completed) SHOULD be executed in parallel via subagents. The implementation agent should:
 
 1. Read the plan's dependency graph
 2. Identify all tasks whose dependencies are satisfied
@@ -44,3 +46,4 @@ Tasks with unmet dependencies wait until their blockers complete.
 | Feature specs | `docs/specs/{id}.md` | `/feature-spec` |
 | Implementation plans | `.claude/plans/{id}-plan.md` | `/feature-plan` |
 | Test plans | `.claude/plans/{id}-tests.md` | `/test-plan` |
+| Operational test plans | `.claude/plans/{id}-ops.md` | `/operational-test-plan` |
