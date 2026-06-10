@@ -10,7 +10,6 @@ description: >
   or before any non-trivial implementation.
   Saves spec to docs/specs/ for review and approval before planning.
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
-model: opus
 ---
 
 # Feature Spec

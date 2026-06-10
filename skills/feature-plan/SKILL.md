@@ -11,7 +11,6 @@ description: >
   small-medium changes.
 argument-hint: [spec-file-path]
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Agent, TaskCreate, TaskUpdate
-model: opus
 ---
 
 # Feature Plan
@@ -212,7 +211,7 @@ export async function doThing(input: ExampleInput): Promise<ExampleOutput>;
 
 ### Step 6: Adversarial Plan Review
 
-**Before presenting the plan to the user**, save the draft to `.claude/plans/{id}-plan.md` and launch a subagent to review it adversarially.
+**Before presenting the plan to the user**, save the draft to `docs/specs/{id}-plan.md` and launch a subagent to review it adversarially.
 
 Use the Agent tool with `subagent_type: "Plan"` and the following prompt:
 
@@ -220,7 +219,7 @@ Use the Agent tool with `subagent_type: "Plan"` and the following prompt:
 You are a Senior Staff Engineer reviewing an implementation plan. Your job is to find flaws, gaps, and improvements. Be adversarial — assume the plan has problems.
 
 Read these files:
-1. The plan draft: .claude/plans/{id}-plan.md
+1. The plan draft: docs/specs/{id}-plan.md
 2. The feature spec: docs/specs/{id}.md
 3. The project instructions (CLAUDE.md or AGENTS.md if they exist)
 
@@ -281,7 +280,7 @@ After receiving the subagent's review:
 1. Incorporate all CRITICAL findings (mandatory)
 2. Incorporate WARNING findings where they improve the plan
 3. Consider SUGGESTION findings but don't over-engineer
-4. Update the draft in `.claude/plans/{id}-plan.md`
+4. Update the draft in `docs/specs/{id}-plan.md`
 5. Add a `## Review Notes` section at the end of the plan summarizing what changed
 
 ### Step 7: Present for Approval
@@ -292,19 +291,19 @@ Show the complete plan to the user. Mention that it was reviewed and improved by
 
 ### Step 8: Save the Plan
 
-Once approved, update status in `.claude/plans/{id}-plan.md` if needed.
+Once approved, update status in `docs/specs/{id}-plan.md` if needed.
 
 #### Next Step Guidance (MANDATORY)
 
 Determine what comes next based on the feature-workflow rule. **Never suggest jumping to implementation directly.**
 
 - **If the plan is full mode (non-trivial / Medium+ complexity):**
-  Suggest: "Next step: `/test-plan .claude/plans/{id}-plan.md` to expand the Test Matrix into a full test suite before implementing. If this feature changes a real product workflow, run `/operational-test-plan .claude/plans/{id}-plan.md` after `/test-plan`."
+  Suggest: "Next step: `/test-plan docs/specs/{id}-plan.md` to expand the Test Matrix into a full test suite before implementing. If this feature changes a real product workflow, run `/operational-test-plan docs/specs/{id}-plan.md` after `/test-plan`."
 
 - **If the plan is lite mode (trivial / Low complexity):**
   Display the Sprint Goal with the plan path and method as reference:
   ```
-  **Plan:** `.claude/plans/{id}-plan.md`
+  **Plan:** `docs/specs/{id}-plan.md`
   **Method:** `/tdd` (RED → GREEN → REFACTOR for each task)
 
   ## Sprint Goal
