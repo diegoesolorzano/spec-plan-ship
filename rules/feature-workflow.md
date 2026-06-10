@@ -14,7 +14,7 @@ When implementing a new feature or significant change (not a typo or 1-line fix)
 4. **Operational test plan (Medium+ workflow features)** — Use `/operational-test-plan` when the feature changes a real product workflow: business capability, pipeline, agent behavior, operator/admin handoff, webhook, queue, cron, external integration, state machine, or multi-step user journey. This defines the blocking scenarios that prove the product works in realistic operation.
 5. **Sprint Goal** — Before implementing, display the Sprint Goal from the plan. This is the acceptance criteria the agent must satisfy autonomously. Show it after the last planning artifact: after `/operational-test-plan` if one was created, otherwise after `/test-plan` or `/feature-plan`. Format: quote the `## Sprint Goal` section from the plan file. Optional but recommended — gives agents a clear stopping criterion.
 6. **Implement with TDD** — For each plan task, use `/tdd` (which consumes the test plan or Test Matrix) to write tests first, then implement. Pure functions get tests even if the task is marked `Tests: No`.
-7. **Operational validation** — Before marking a Medium+ workflow feature shipped, execute the blocking scenarios from `.claude/plans/{id}-ops.md` or record explicit user acceptance of the risk.
+7. **Operational validation** — Before marking a Medium+ workflow feature shipped, execute the blocking scenarios from `docs/specs/{id}-ops.md` or record explicit user acceptance of the risk.
 8. **Review** — Review changes before committing
 9. **Commit** — Create atomic, well-described commits
 
@@ -44,6 +44,6 @@ Tasks with unmet dependencies wait until their blockers complete.
 | Artifact | Path | Created By |
 |----------|------|------------|
 | Feature specs | `docs/specs/{id}.md` | `/feature-spec` |
-| Implementation plans | `.claude/plans/{id}-plan.md` | `/feature-plan` |
-| Test plans | `.claude/plans/{id}-tests.md` | `/test-plan` |
-| Operational test plans | `.claude/plans/{id}-ops.md` | `/operational-test-plan` |
+| Implementation plans | `docs/specs/{id}-plan.md` | `/feature-plan` |
+| Test plans | `docs/specs/{id}-tests.md` | `/test-plan` |
+| Operational test plans | `docs/specs/{id}-ops.md` | `/operational-test-plan` |
