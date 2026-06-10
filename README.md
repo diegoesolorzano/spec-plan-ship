@@ -158,7 +158,7 @@ Claude enters **Architect mode** and will:
 - Explore your codebase for existing patterns to reuse
 - Break implementation into 2-5 minute tasks with exact file paths
 - Run an adversarial review via subagent before presenting
-- Save to `.claude/plans/{id}-plan.md`
+- Save to `docs/specs/{id}-plan.md`
 
 **Example output:**
 ```markdown
@@ -180,7 +180,7 @@ Claude enters **Architect mode** and will:
 For features with cross-layer interactions, multiple consumers, or shared state:
 
 ```
-/test-plan .claude/plans/email-notifications-plan.md
+/test-plan docs/specs/email-notifications-plan.md
 ```
 
 Claude enters **QA Architect mode** and will:
@@ -190,7 +190,7 @@ Claude enters **QA Architect mode** and will:
 - Add E2E flows for cross-layer integration testing
 - Map which tests can run in parallel
 - Run an adversarial review via subagent before presenting
-- Save to `.claude/plans/{id}-tests.md`
+- Save to `docs/specs/{id}-tests.md`
 
 **For Low complexity features, skip this step** — the Test Matrix embedded in the plan (from Step 2) provides sufficient test design.
 
@@ -201,14 +201,14 @@ Claude enters **QA Architect mode** and will:
 For Medium+ workflow features, add the operational gate before implementation:
 
 ```
-/operational-test-plan .claude/plans/email-notifications-plan.md
+/operational-test-plan docs/specs/email-notifications-plan.md
 ```
 
 Claude enters **Operational QA mode** and will:
 - Identify the real business capabilities the feature must prove
 - Define realistic actor/system scenarios across state, UI, side effects, and handoffs
 - Separate automated operational tests, staging smoke, manual acceptance, and future automation
-- Save to `.claude/plans/{id}-ops.md`
+- Save to `docs/specs/{id}-ops.md`
 
 ### Step 5: Test-Driven Implementation
 
@@ -231,7 +231,7 @@ Claude enters **QA mode** and will:
 
 ### Step 6: Ship
 
-Execute remaining tasks from the plan. For Medium+ workflow features, run the blocking scenarios from `.claude/plans/{id}-ops.md` before marking the feature shipped.
+Execute remaining tasks from the plan. For Medium+ workflow features, run the blocking scenarios from `docs/specs/{id}-ops.md` before marking the feature shipped.
 
 ## What Each Piece Does
 
@@ -286,7 +286,7 @@ For Medium+ features that change real product workflows. It proves the business 
 - Identifies operational capabilities and stable test boundaries
 - Designs realistic scenarios across users, operators/admins, automation, and integrations
 - Separates automated operational tests, staging smoke, manual acceptance, and future automation
-- Produces `.claude/plans/{id}-ops.md` with blocking ship gate evidence
+- Produces `docs/specs/{id}-ops.md` with blocking ship gate evidence
 
 Not needed for isolated code changes with no operational behavior.
 
@@ -374,9 +374,9 @@ If you have [OpenCode](https://opencode.ai) installed, you can send plans, code,
 
 | Agent | What It Reviews | Example |
 |-------|----------------|---------|
-| `plan-reviewer` | Implementation plans | `opencode run --agent plan-reviewer --dir . "Review this plan" -f .claude/plans/my-plan.md` |
+| `plan-reviewer` | Implementation plans | `opencode run --agent plan-reviewer --dir . "Review this plan" -f docs/specs/my-plan.md` |
 | `readonly-code-reviewer` | Code changes | `opencode run --agent readonly-code-reviewer --dir . "Review recent changes"` |
-| `test-reviewer` | Test plans and test suites | `opencode run --agent test-reviewer --dir . "Review test coverage" -f .claude/plans/my-tests.md` |
+| `test-reviewer` | Test plans and test suites | `opencode run --agent test-reviewer --dir . "Review test coverage" -f docs/specs/my-tests.md` |
 
 These agents operate in read-only mode — they analyze and report, never modify files. The value is getting a second opinion from a different model (GPT, Gemini, etc.) before implementing.
 
