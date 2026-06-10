@@ -11,7 +11,6 @@ description: >
   Use after /feature-plan and before implementation.
 argument-hint: [plan-file-path]
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Agent
-model: opus
 ---
 
 # Test Plan
@@ -32,7 +31,7 @@ Writing tests ad-hoc during implementation introduces bias — you test what you
 ### Step 1: Load the Plan
 
 - If the user provided a file path as argument, read it.
-- If no argument, look in `.claude/plans/` for the most recent plan file.
+- If no argument, look in `docs/specs/` for the most recent plan file.
 - If multiple plans exist, ask which one to use.
 - Also read the corresponding spec from `docs/specs/` (referenced in the plan's header).
 
@@ -122,8 +121,8 @@ You are a Senior QA Engineer reviewing a test plan. Your job is to find gaps
 in test coverage. Be adversarial — assume the plan misses important cases.
 
 Read these files:
-1. The test plan draft: .claude/plans/{id}-tests.md
-2. The implementation plan: .claude/plans/{id}-plan.md
+1. The test plan draft: docs/specs/{id}-tests.md
+2. The implementation plan: docs/specs/{id}-plan.md
 3. The feature spec: docs/specs/{id}.md
 
 Then critique on these dimensions:
@@ -170,15 +169,15 @@ Show the complete test plan. Ask:
 
 ### Step 9: Save the Test Plan
 
-Once approved, save to `.claude/plans/{id}-tests.md`.
+Once approved, save to `docs/specs/{id}-tests.md`.
 
 #### Display Sprint Goal and Suggest Implementation (MANDATORY)
 
 After saving the test plan, display the Sprint Goal with artifact pointers so the implementing agent knows where everything lives:
 
 ```
-**Plan:** `.claude/plans/{id}-plan.md`
-**Tests:** `.claude/plans/{id}-tests.md`
+**Plan:** `docs/specs/{id}-plan.md`
+**Tests:** `docs/specs/{id}-tests.md`
 **Method:** `/tdd` (RED → GREEN → REFACTOR for each task)
 
 ## Sprint Goal
@@ -190,7 +189,7 @@ After saving the test plan, display the Sprint Goal with artifact pointers so th
 ```
 
 Then decide the next step from the workflow rule:
-- If the feature changes a real product workflow, suggest: "Next step: `/operational-test-plan .claude/plans/{id}-plan.md` to define blocking operational scenarios before implementation."
+- If the feature changes a real product workflow, suggest: "Next step: `/operational-test-plan docs/specs/{id}-plan.md` to define blocking operational scenarios before implementation."
 - Otherwise suggest: "Sprint Goal and artifact references shown above. Ready to implement? I'll invoke `/tdd` for each task — writing the failing test first, then implementing."
 
 **IMPORTANT:** Implementation MUST use the `/tdd` skill regardless of how the user phrases the request ("implement", "build it", "go ahead", etc.). The `/tdd` skill consumes the test cases from this test plan. Skipping it means tests won't be written first, defeating the purpose of the test plan phase.
@@ -205,7 +204,7 @@ The feature-workflow sequence is: spec → plan → test-plan → operational-te
 **Feature ID:** {id}
 **Repo:** {target repo directory name}
 **Issue:** {repo}#{n} | none
-**Upstream:** .claude/plans/{id}-plan.md
+**Upstream:** docs/specs/{id}-plan.md
 **Date:** YYYY-MM-DD
 **Status:** Tested
 **Test framework:** {vitest | jest | pytest | phpunit | etc.}

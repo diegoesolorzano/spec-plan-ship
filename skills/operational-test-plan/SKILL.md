@@ -9,7 +9,6 @@ description: >
   or UI components pass tests.
 argument-hint: [plan-file-path]
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Agent
-model: opus
 ---
 
 # Operational Test Plan
@@ -44,7 +43,7 @@ Skip for trivial fixes, copy changes, isolated pure functions, or internal refac
 
 - Read the implementation plan passed by the user.
 - Read the upstream spec from the plan header.
-- Read `.claude/plans/{id}-tests.md` if it exists.
+- Read `docs/specs/{id}-tests.md` if it exists.
 - Read relevant project docs/rules for the feature domain.
 
 ### Step 2: Identify Operational Capabilities
@@ -106,7 +105,7 @@ Write the minimum evidence required before production:
 
 ### Step 7: Save the Artifact
 
-Save to `.claude/plans/{id}-ops.md` with this header:
+Save to `docs/specs/{id}-ops.md` with this header:
 
 ```markdown
 # Operational Test Plan: {Feature Title}
@@ -114,7 +113,7 @@ Save to `.claude/plans/{id}-ops.md` with this header:
 **Feature ID:** {id}
 **Repo:** {target repo directory name}
 **Issue:** {repo}#{n} | none
-**Upstream:** .claude/plans/{id}-tests.md | .claude/plans/{id}-plan.md
+**Upstream:** docs/specs/{id}-tests.md | docs/specs/{id}-plan.md
 **Date:** YYYY-MM-DD
 **Status:** Tested
 ```
