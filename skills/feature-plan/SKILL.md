@@ -50,14 +50,12 @@ Read the relevant files to understand existing patterns:
 
 4. **Type system** — Identify relevant existing types, interfaces, and module boundaries that the new code must integrate with.
 
-### Step 4: Define the Sprint Goal
+### Step 4: Reference the Sprint Goal
 
-Write the `## Sprint Goal` section for the plan:
+The `## Sprint Goal` is authored in the **spec** (`/feature-spec`), not here. The plan does **not** re-author it.
 
-1. **Goal statement** — Synthesize the spec's Problem Statement into a 1-2 sentence outcome. Write it as a completion criterion: what is true when this sprint is done? An autonomous agent reading only this sentence should understand what it's building toward.
-2. **Done when** — Pull each acceptance criterion from the spec's `## Acceptance Criteria` section as a checkbox item. Add "All tests pass" and "No regressions in existing functionality" as final items. For Medium+ features, also add "Agent docs updated (rules/skills/CLAUDE.md)" if applicable.
-
-Keep it concise — the goal is a reference target, not a restatement of the full spec.
+- Read the spec's `## Sprint Goal` and reference it by its upstream path; the display-before-implement step (below) sources the Sprint Goal from the spec.
+- If the spec predates the Sprint Goal placement (goal still in an old plan) or has no `## Sprint Goal`, flag it and ask the user — do not silently invent criteria here.
 
 ### Step 5: Design the Task Breakdown
 
@@ -94,15 +92,14 @@ After defining all tasks, add a **Test Matrix** section (full mode only):
 
 ## Sprint Goal
 
-> {1-2 sentence goal statement — the outcome this sprint delivers, written so an autonomous agent knows when to stop.}
+_Quoted from the spec's `## Sprint Goal` (authored in `/feature-spec`, not here). Reproduce it verbatim as a reference target._
+
+> {goal statement quoted from the spec}
 
 ### Done when
 
-- [ ] {Acceptance criterion from spec — Given/When/Then or declarative}
-- [ ] {Acceptance criterion}
+- [ ] {criterion quoted from the spec}
 - [ ] ...
-- [ ] All tests pass
-- [ ] No regressions in existing functionality
 
 ## Shared Types
 
@@ -193,11 +190,13 @@ export async function doThing(input: ExampleInput): Promise<ExampleOutput>;
 
 ## Sprint Goal
 
-> {1-sentence goal — what "done" looks like.}
+_Quoted from the spec's `## Sprint Goal` (authored in `/feature-spec`, not here)._
+
+> {goal quoted from the spec}
 
 ### Done when
 
-- [ ] {Key acceptance criterion}
+- [ ] {criterion quoted from the spec}
 - [ ] All tests pass
 
 ## Tasks

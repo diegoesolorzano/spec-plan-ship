@@ -82,6 +82,18 @@ Skip this section for straightforward features where the "why" is obvious.
 - **Given** {precondition}, **When** {action}, **Then** {expected result}
 - **Given** ..., **When** ..., **Then** ...
 
+## Sprint Goal
+
+> {1-2 sentence goal statement — the outcome this sprint delivers.}
+
+### Done when
+
+Make every item **machine-verifiable** so the goal is precise enough to check — and to automate later: a shell command expected to exit 0, a named test/suite that must pass, a file/path that must exist, or a grep/pattern that must match. State the evidence inline. Avoid vague phrasings ("no regressions", "works well") unless bound to a concrete command (e.g. the full test suite exits 0).
+
+- [ ] {Acceptance criterion} — evidence: `{command}` exits 0 / `{test}` passes / `{path}` exists
+- [ ] ...
+- [ ] All tests pass — evidence: `{repo test command}` exits 0
+
 ## Scope
 
 Group deliverables by area. Be specific about file paths and what changes:
@@ -168,6 +180,15 @@ For each risk:
 Unresolved decisions, if any.
 ```
 
+### Step 3.5: Define the Sprint Goal
+
+Write the `## Sprint Goal` section (placed right after `## Acceptance Criteria`):
+
+1. **Goal statement** — synthesize the Problem Statement into a 1-2 sentence outcome: what is true when this sprint is done?
+2. **Done when** — turn each acceptance criterion from `## Acceptance Criteria` into a checkbox whose completion is **machine-verifiable**: a shell command expected to exit 0, a named test/suite that must pass, a file/path that must exist, or a grep/pattern that must match. Name the evidence inline. Make the criteria detailed and precise enough that a machine could later check them without judgment. Add "All tests pass" (bound to the repo's test command); for Medium+ features add "Agent docs updated (rules/skills/CLAUDE.md)" if applicable.
+
+Invest in this section — a detailed, verifiable Sprint Goal is what makes the feature automatable later. The Sprint Goal lives in the spec (not the plan); `/feature-plan` references it rather than re-authoring it. The human still decides how to proceed from there — case by case.
+
 ### Step 4: Present for Approval
 
 Show the complete spec to the user. Ask:
@@ -196,10 +217,17 @@ After saving, present a compact summary suitable for external audit or async rev
 **In scope:** {bullet list of what ships}
 **Out of scope:** {bullet list of what doesn't}
 **Top risks:** {1-2 most relevant risks with mitigations}
+
+## Sprint Goal
+> {goal statement quoted verbatim from the spec's ## Sprint Goal}
+### Done when
+- [ ] {criterion}
+- [ ] ...
+
 **Next:** `/feature-plan docs/specs/{id}.md`
 ```
 
-This is a reformatting of information already in the spec — not new content. Its purpose is to give reviewers a self-contained snapshot without opening the file.
+This is a reformatting of information already in the spec — not new content. Its purpose is to give reviewers a self-contained snapshot without opening the file. **Always display the `## Sprint Goal` verbatim here** — it is the last thing shown before planning, so the human sees the target before deciding how to proceed.
 
 Suggest next step: "Ready to plan implementation? Use `/feature-plan docs/specs/{id}.md`"
 
