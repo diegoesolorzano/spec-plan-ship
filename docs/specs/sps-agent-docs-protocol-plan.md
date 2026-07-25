@@ -5,7 +5,7 @@
 **Issue:** none
 **Upstream:** docs/specs/sps-agent-docs-protocol.md
 **Date:** 2026-07-25
-**Status:** InReview
+**Status:** Shipped
 
 ## Overview
 
