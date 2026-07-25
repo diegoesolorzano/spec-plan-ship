@@ -77,10 +77,24 @@ conformance. Minimum checks, verifiable anywhere:
 
 ## Lightweight-rule criterion
 
-An always-on rule's whole body is paid on every turn. Keep it to 1-line invariants + a
-pointer to the owning skill. Normative detail NEVER lives in the rule — it lives in the
-skill (or its `references/`), loaded on demand. Test for every line: "is this needed on
-EVERY turn?" If not, move it to the skill.
+An always-on rule's whole body is paid on every turn. The decision axis is NOT "is this
+important?" but **"can this invariant be violated on ANY turn in the repo?"** (security,
+git, data safety). Only then does it earn a rule; subsystem knowledge goes to a skill
+(loaded on demand); folder-local guidance goes to that folder's AGENTS.md (closest-wins).
+
+Required form: **signposting** — 1-line invariants (the WHAT) + a pointer "full detail →
+skill X". The why, incidents, and procedures live in the skill. Test every line: "is this
+needed on EVERY turn?" If not, move it to the skill. (Measured anti-pattern: rules
+duplicating their twin skill's full normative body wasted ~9k tokens/turn in one audited
+repo; a move-never-delete diet recovered 26% of the always-on budget.)
+
+When a spec adds a rule, its Agent Readiness must state: (a) why the constraint passes the
+every-turn filter, (b) the signpost version of the rule, (c) which skill receives the
+detail.
+
+Platform note: auto-loaded rule directories (e.g. `.claude/rules/` with `paths:` gating)
+are NOT native to Claude Code — they rely on per-repo wiring. Don't assume them in a
+consuming repo; the native on-demand mechanism is the skill.
 
 ## Optional CI gate
 
