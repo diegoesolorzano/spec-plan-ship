@@ -149,7 +149,7 @@ Goal's "Done when" with command-shaped evidence (file exists, `[ "$(readlink CLA
 Applicability matrix — deliverables are mandatory by default; every N/A requires an explicit 1-line justification (never a silent omission). Default: **update the existing artifact**; create a new one only for a genuinely new subsystem, folder, or constraint:
 - **Skill**: always for Medium+ — extend the owning subsystem skill, or create a new one only for a distinct subsystem; N/A only if trivial or fully covered by an existing skill/rule (name which one).
 - **AGENTS.md** (+ CLAUDE.md symlink): required iff the feature creates or modifies a module/facade folder; keep it short (purpose, public surface, non-obvious invariants, gotchas, pointer to the owning skill — never file inventories).
-- **Rule**: required iff the feature introduces a new always-on constraint; keep it light — 1-line invariants + pointer to the skill, detail never in the rule.
+- **Rule**: required iff the constraint can be violated on ANY turn (not merely "important"); if adding one, state why it passes the every-turn filter, give the 1-line signpost version (invariants + pointer to the skill), and name the skill that receives the detail — normative detail never lives in the rule.
 
 ### Human Documentation
 - **README.md**: Does this feature add commands, env vars, setup steps, or concepts that a human contributor needs to know?
