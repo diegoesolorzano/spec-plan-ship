@@ -8,7 +8,7 @@ description: Orchestrates feature development flow from spec to ship
 
 When implementing a new feature or significant change (not a typo or 1-line fix):
 
-1. **Spec first** — Use `/feature-spec` to define WHAT and WHY
+1. **Spec first** — Use `/feature-spec` to define WHAT and WHY. For a Medium+ feature the spec MUST scope its **agent docs as deliverables** — a **skill** (new or an extension of the owning subsystem skill) plus AGENTS.md/rule/runbook as applicable (Agent Readiness section). "Ship the code, document later" is not the flow: the skill + docs are part of the spec and gated in its Sprint Goal.
 2. **Plan second** — Use `/feature-plan` to define HOW and WHERE (includes a Test Matrix and Sprint Goal in full mode)
 3. **Test plan (Medium+ only)** — Use `/test-plan` for features with cross-layer interactions, multiple consumers, or shared state. Expands the plan's Test Matrix into a comprehensive standalone test suite with E2E flows, fixtures, and parallelization groups. Skip for Low complexity features — the plan's embedded Test Matrix is sufficient.
 4. **Operational test plan (Medium+ workflow features)** — Use `/operational-test-plan` when the feature changes a real product workflow: business capability, pipeline, agent behavior, operator/admin handoff, webhook, queue, cron, external integration, state machine, or multi-step user journey. This defines the blocking scenarios that prove the product works in realistic operation.
