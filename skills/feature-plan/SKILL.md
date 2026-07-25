@@ -379,10 +379,14 @@ Standard order for full-stack features:
 
 ### Agent Documentation Task
 
-Every plan for a Medium+ feature MUST include a task (typically second-to-last, before deploy/close) for agent documentation:
+Every plan for a Medium+ feature MUST include a task (typically second-to-last, before deploy/close) that materializes the **applicable** deliverables from the spec's "Agent Readiness" section — never a vague "update docs" task:
 
-- **Do:** Check the spec's "Agent Readiness" section. Create or update rules, skills, and CLAUDE.md/AGENTS.md entries as specified. If the spec has no Agent Readiness section, evaluate independently: does a future agent need any documentation to discover, use, or extend this feature?
-- **Verify:** A cold agent reading only project docs can find and correctly use this feature.
+- **Do:** For each applicable deliverable, update the existing artifact by default (extend the owning skill / update the folder's AGENTS.md / update the existing rule); create a new one only for a genuinely new subsystem, folder, or constraint. For each deliverable the spec marks N/A, **quote its 1-line justification and its source line from the spec** in the task — an N/A without a quoted justification is a gap the plan must flag, not accept. If the spec has no Agent Readiness section, evaluate independently: does a future agent need any documentation to discover, use, or extend this feature?
+- **Verify (command-shaped, per applicable deliverable):**
+  - AGENTS.md: `test -f {dir}/AGENTS.md` and `[ "$(readlink {dir}/CLAUDE.md)" = "AGENTS.md" ]` both exit 0
+  - Skill: `[ "$(wc -l < .claude/skills/{name}/SKILL.md)" -lt 500 ]` exits 0, and its frontmatter `name` matches the directory
+  - Rule: the rule body stays 1-line invariants + a pointer to the owning skill (no normative detail)
+  - Plus the judgment check: a cold agent reading only project docs can find and correctly use this feature.
 
 ### Reuse Over Reinvention
 

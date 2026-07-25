@@ -78,29 +78,33 @@ Copy the files into your project's `.claude/` directory:
 mkdir -p .claude/skills/feature-spec .claude/skills/feature-plan .claude/skills/test-plan .claude/skills/operational-test-plan .claude/skills/tdd .claude/rules docs/specs
 
 # Copy skills
-curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/feature-spec/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/feature-spec/SKILL.md \
   -o .claude/skills/feature-spec/SKILL.md
 
-curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/feature-plan/SKILL.md \
+mkdir -p .claude/skills/feature-spec/references
+curl -fsSL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/feature-spec/references/agent-docs-standard.md \
+  -o .claude/skills/feature-spec/references/agent-docs-standard.md
+
+curl -fsSL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/feature-plan/SKILL.md \
   -o .claude/skills/feature-plan/SKILL.md
 
-curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/test-plan/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/test-plan/SKILL.md \
   -o .claude/skills/test-plan/SKILL.md
 
-curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/operational-test-plan/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/operational-test-plan/SKILL.md \
   -o .claude/skills/operational-test-plan/SKILL.md
 
-curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/tdd/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/skills/tdd/SKILL.md \
   -o .claude/skills/tdd/SKILL.md
 
 # Copy rule
-curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/rules/feature-workflow.md \
+curl -fsSL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/rules/feature-workflow.md \
   -o .claude/rules/feature-workflow.md
 
-curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/rules/operational-functional-testing.md \
+curl -fsSL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/rules/operational-functional-testing.md \
   -o .claude/rules/operational-functional-testing.md
 
-curl -sL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/rules/documentation-scope.md \
+curl -fsSL https://raw.githubusercontent.com/diegoesolorzano/spec-plan-ship/main/rules/documentation-scope.md \
   -o .claude/rules/documentation-scope.md
 ```
 
@@ -119,7 +123,7 @@ mkdir -p your-project/docs/specs
 
 ### Verify
 
-Open Claude Code in your project. You should see `/feature-spec`, `/feature-plan`, `/test-plan`, `/operational-test-plan`, and `/tdd` in your available skills.
+Open Claude Code in your project. You should see `/feature-spec`, `/feature-plan`, `/test-plan`, `/operational-test-plan`, and `/tdd` in your available skills. The `feature-spec` skill also bundles `references/agent-docs-standard.md` (the Agent Readiness standard) — verify it exists at `.claude/skills/feature-spec/references/`.
 
 ## Usage
 

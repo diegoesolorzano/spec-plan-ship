@@ -44,6 +44,8 @@ Reference specific file paths in the spec.
 
 The spec should be **as detailed as the feature requires**. A simple endpoint gets a short spec. A feature that involved evaluating multiple approaches, analyzing production data, or debating architecture gets a comprehensive spec that captures all of that context.
 
+**If the feature is Medium+, read `references/agent-docs-standard.md` (bundled with this skill)** for the normative Agent Readiness templates and criteria (applicability matrix, AGENTS.md template, skill conformance, lightweight-rule criterion). Apply its **edit-before-create default**: extend/update the existing skill, AGENTS.md, or rule; create a new one only for a genuinely new subsystem, folder, or constraint.
+
 Use the template below. Include all sections that apply — skip sections that don't.
 
 The spec MUST open with the cross-link header block (after the optional `# ` H1), one field per line in this exact order: **Feature ID** (the `{id}`), **Repo** (the target repo's directory name), **Issue** (`{repo}#{n}` or `none`), **Upstream** (`none` for a spec — it has no upstream), **Date** (`YYYY-MM-DD`), **Status** (one of `Draft`, `Approved`, `Planned`, `Tested`, `Implementing`, `InReview`, `Shipped` — a fresh spec is `Draft`).
@@ -138,26 +140,25 @@ Not mockups — words describing the experience.
 
 What this feature explicitly does NOT include and why.
 
-## Agent Readiness (Medium+ only)
+## Agent Readiness (Medium+ only) — MANDATORY deliverable
 
-Answer each question. If the answer is "no" or "N/A", skip it.
+For a Medium+ feature, the docs below are **part of the spec's scope**, not an afterthought:
+list the applicable ones as concrete deliverables in `## Scope` and gate them in the Sprint
+Goal's "Done when" with command-shaped evidence (file exists, `[ "$(readlink CLAUDE.md)" = "AGENTS.md" ]`, skill body <500 lines). A Medium+ feature that ships without its docs is **not done**.
+
+Applicability matrix — deliverables are mandatory by default; every N/A requires an explicit 1-line justification (never a silent omission). Default: **update the existing artifact**; create a new one only for a genuinely new subsystem, folder, or constraint:
+- **Skill**: always for Medium+ — extend the owning subsystem skill, or create a new one only for a distinct subsystem; N/A only if trivial or fully covered by an existing skill/rule (name which one).
+- **AGENTS.md** (+ CLAUDE.md symlink): required iff the feature creates or modifies a module/facade folder; keep it short (purpose, public surface, non-obvious invariants, gotchas, pointer to the owning skill — never file inventories).
+- **Rule**: required iff the feature introduces a new always-on constraint; keep it light — 1-line invariants + pointer to the skill, detail never in the rule.
 
 ### Human Documentation
 - **README.md**: Does this feature add commands, env vars, setup steps, or concepts that a human contributor needs to know?
 
 ### Agent Documentation
-- **AGENTS.md** (+ CLAUDE.md symlink): What does a cold agent — with zero prior context — need to discover and correctly use this feature? Keep root minimal; point to nested docs for detail (progressive disclosure).
-
-### Rules
-- Does this feature introduce constraints an agent must always respect? (e.g., "never call X without Y", "all routes in this module must Z")
-- Does it introduce path-specific conventions that only apply when touching certain files?
-
-### Skills
-- Does this feature have a repeatable workflow that an agent or user should invoke on demand?
-- Does it introduce process-specific guidance that is too heavy to always load but must apply conditionally? (e.g., domain-specific build steps, deploy procedures, conditional validation logic)
+- **Runbook** (`docs/runbooks/{id}.md`): if the feature has a repeatable operational procedure, a multi-surface invariant that drifts easily, or manual recovery steps — write it and reference it from the skill (progressive disclosure).
 
 ### Discoverability Check
-Can a future agent — with zero context from this conversation — find and correctly use this feature by reading project docs alone? If not, what's missing?
+Can a future agent — with zero context from this conversation — find and correctly use this feature by reading project docs alone (AGENTS.md → skill → runbook)? If not, what's missing?
 
 ## Risks
 
