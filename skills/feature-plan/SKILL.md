@@ -214,9 +214,10 @@ _Quoted from the spec's `## Sprint Goal` (authored in `/feature-spec`, not here)
 - **Depends on:** None
 ```
 
-Lite plans still carry the security-review task whenever the change touches a fetch, an API
-route, a DB read/write, a permission, or a secret — a one-line `GRANT` is a lite change and was
-exactly the incident that motivated the gate. Only a plan with no new data access omits it.
+Lite plans still carry the security-review task whenever the change touches an entry point, a data
+operation, a permission, or a secret — a one-line permission grant is a lite change, and that is
+exactly the incident that motivated the gate. Only a plan with no new data access and no new
+caller omits it.
 
 ### Step 6: Emit `## Execution Waves` (when the plan qualifies)
 
@@ -452,18 +453,20 @@ Every plan for a Medium+ feature MUST include a task (typically second-to-last, 
 ### Security Review Task (FIXED — last task of every plan)
 
 Every plan ends with a task that runs the `security-review` skill over the finished diff. It is
-**mandatory** when the feature adds or modifies a fetch/HTTP call, an API route or webhook, a DB
-read/write (query, RPC, migration, trigger, view, policy), a permission/grant/role/access flag,
-or secret handling — which is nearly every plan that is not pure UI. Emit it as:
+**mandatory** when the feature adds or modifies an entry point (endpoint, webhook, queue consumer,
+scheduled job, CLI command, RPC, agent-callable tool), an outbound request to a service you do not
+control, a data read/write, a permission (role/grant/scope/token audience/access flag), or secret
+handling — which is nearly every plan that is not pure presentation. Emit it as:
 
 ```markdown
 ### Task N: Revisión de seguridad final
 - **Files:** none (read-only review)
-- **Do:** Invoke the `security-review` skill over the full diff of this feature. Enumerate the
-  surface this plan adds — {list the endpoints / RPCs / migrations / grants from the tasks
-  above} — and run its seven checks against it. Highest priority: what the BROWSER can reach
-  directly (privileged keys in client-reachable code; `SECURITY DEFINER` functions with EXECUTE
-  granted to `anon`/`authenticated`; views without caller-scoped execution).
+- **Do:** Invoke the `security-review` skill over the full diff of this feature. Enumerate what
+  this plan adds — {list the entry points / data operations / permissions / secrets from the
+  tasks above} — plus **who can call each one**, and run its seven checks against that. Highest
+  priority: privilege reachability across the trust boundary — any capability running with more
+  authority than its caller must be unreachable from every untrusted caller by every path, not
+  only through the entry point you designed.
 - **Verify:** Every check has a command and its output. Zero CRITICAL findings, or each one has
   a fix task added below and completed before merge.
 - **Depends on:** all implementation tasks
