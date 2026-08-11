@@ -15,10 +15,11 @@ When implementing a new feature or significant change (not a typo or 1-line fix)
 5. **Sprint Goal** — Before implementing, display the Sprint Goal from the plan. This is the acceptance criteria the agent must satisfy autonomously. Show it after the last planning artifact: after `/operational-test-plan` if one was created, otherwise after `/test-plan` or `/feature-plan`. Format: quote the `## Sprint Goal` section from the plan file. Optional but recommended — gives agents a clear stopping criterion.
 6. **Implement with TDD** — For each plan task, use `/tdd` (which consumes the test plan or Test Matrix) to write tests first, then implement. Pure functions get tests even if the task is marked `Tests: No`.
 7. **Operational validation** — Before marking a Medium+ workflow feature shipped, execute the blocking scenarios from `docs/specs/{id}-ops.md` or record explicit user acceptance of the risk.
-8. **Review** — Review changes before committing
-9. **Commit** — Create atomic, well-described commits
+8. **Security review (fixed final task of every plan)** — Invoke the `security-review` skill over the finished diff. Mandatory whenever the change adds or modifies a fetch/HTTP call, an API route or webhook, a DB read/write (query, RPC, migration, trigger, view, policy), a permission/grant/role/access flag, or secret handling. Read-only: findings become fix tasks. See rule `security-review-gate`.
+9. **Review** — Review changes before committing
+10. **Commit** — Create atomic, well-described commits
 
-Skip to step 6 for trivial changes (config tweaks, copy edits, single-file fixes).
+Skip to step 6 for trivial changes (config tweaks, copy edits, single-file fixes) — but **step 8 still applies** if the trivial change touches data access, permissions or secrets. A one-line `GRANT` is a trivial change and is exactly the class of bug this gate exists for.
 
 ## Parallel Execution
 
