@@ -125,6 +125,8 @@ interface ExampleOutput { ... }
 - **Verify:** How to confirm this task is done correctly.
 - **Tests:** Yes/No. If yes, what behaviors to test.
 - **Depends on:** None | Task N
+- **Risky:** yes *(optional — omit unless true; forces this task to run alone)*
+- **Shared infra:** yes *(optional — omit unless true; the task touches a shared DB, port, or service)*
 
 ### Task 2: {Title}
 ...
@@ -176,6 +178,10 @@ export async function doThing(input: ExampleInput): Promise<ExampleOutput>;
 - Potential issues and how to mitigate them
 ```
 
+**The last task of every plan is the security review** (see "Security Review Task" below). It is
+part of the template, not an optional extra — emit it after the agent-docs task, and never
+renumber it away.
+
 #### Lite Mode Template (trivial changes only)
 
 ```markdown
@@ -208,7 +214,57 @@ _Quoted from the spec's `## Sprint Goal` (authored in `/feature-spec`, not here)
 - **Depends on:** None
 ```
 
-### Step 6: Adversarial Plan Review
+Lite plans still carry the security-review task whenever the change touches an entry point, a data
+operation, a permission, or a secret — a one-line permission grant is a lite change, and that is
+exactly the incident that motivated the gate. Only a plan with no new data access and no new
+caller omits it.
+
+### Step 6: Emit `## Execution Waves` (when the plan qualifies)
+
+Compute this **now** — before the adversarial review, before cross-model review, before approval — so
+that the plan that gets reviewed and approved is the final one. Inserting it later mutates an
+approved artifact.
+
+Offer it only when the plan qualifies: **the realizable schedule must contain at least one wave of
+concurrency ≥2.** Task count alone is not the test — twelve tasks in a chain, or a single shared
+staging DB, collapse to sequential work anyway. Below that bar, skip the section entirely and say
+sequential `/tdd` is the answer.
+
+Derive the waves deterministically (the lite template never qualifies — trivial plans do not
+parallelize):
+
+1. **Normalize** each task's `Files:` to repo-relative POSIX paths. Compare them **case-insensitively**
+   (macOS and Windows treat `Src/a.ts` and `src/a.ts` as one file).
+2. **Mark unknown** — if *any* entry is a glob, a directory, an absolute path, a `..` path, a home-dir
+   path, or the bullet is missing entirely, the task's file set is not trustworthy.
+3. **Force serial** any task that is unknown, a migration, `Risky: yes`, `Shared infra: yes`, or that
+   writes a machine-global surface (`~/.claude`, `~/.agents`) — the last are orchestrator-only.
+4. **Build waves uncapped**, in task-id order: a task joins the current wave only when every task it
+   depends on is already in an earlier wave AND its files are disjoint from every task already in
+   this wave. Forced-serial tasks take a wave alone. **Do not group by "connected component"** — if A
+   collides with B and B with C, but A and C do not collide, A and C may still share a wave.
+5. **Split by cap last** — one shared staging DB caps a wave at 1, an E2E cost group at 2 — preserving
+   order.
+
+Emit the result, plus the cap and every constraint that produced it, and the orchestrator-only line:
+
+```markdown
+## Execution Waves
+
+| Wave | Task ids | Why they fit |
+|---|---|---|
+| 1 | T1, T3 | disjoint files, no dependencies |
+| 2 | T2 | rewrites the file T1 created |
+
+Forced serial: {ids and why} · Cap: {n} · {every active bound, or "no constraint; full parallel"}
+Orchestrator-only: merges, PRs, migrations, deploys, and any paid review of the root artifacts.
+```
+
+The section is **advisory** — deleting it restores sequential `/tdd`. If the suite-core
+`/parallel-ship` skill is installed, it computes this same schedule deterministically (and executes
+it); this checklist is what the free workflow uses on its own.
+
+### Step 7: Adversarial Plan Review
 
 **Before presenting the plan to the user**, save the draft to `docs/specs/{id}-plan.md` and launch a subagent to review it adversarially.
 
@@ -282,13 +338,13 @@ After receiving the subagent's review:
 4. Update the draft in `docs/specs/{id}-plan.md`
 5. Add a `## Review Notes` section at the end of the plan summarizing what changed
 
-### Step 7: Present for Approval
+### Step 8: Present for Approval
 
 Show the complete plan to the user. Mention that it was reviewed and improved by the adversarial agent. Ask:
 - "Does this approach make sense?"
 - "Want to adjust the scope, task order, or any signatures?"
 
-### Step 8: Save the Plan
+### Step 9: Save the Plan
 
 Once approved, update status in `docs/specs/{id}-plan.md` if needed.
 
@@ -311,6 +367,12 @@ Determine what comes next based on the feature-workflow rule. **Never suggest ju
   Then suggest: "Ready to implement? I'll invoke `/tdd` for each task — writing the failing test first, then implementing."
 
   **IMPORTANT:** Implementation MUST use the `/tdd` skill regardless of how the user phrases the request ("implement", "build it", "go ahead", etc.). Skipping `/tdd` violates the feature-workflow.
+
+- **If the plan carries an `## Execution Waves` section** (Step 6 found at least one wave of
+  concurrency ≥2): mention it once — "This plan has parallelizable waves; `/parallel-ship` can run
+  them in isolated worktrees, or `/tdd` sequentially as usual." Offer it; never assume it. Parallel
+  execution costs a worktree and a dependency install per concurrent task, so it earns its keep only
+  on genuinely wide plans.
 
 The feature-workflow sequence is: spec → plan → **test-plan (Medium+)** → **operational-test-plan when workflow behavior changes** → **Sprint Goal display** → implement with /tdd. Skipping test-plan for Medium+ features violates the workflow. Skipping operational-test-plan for Medium+ workflow features violates the workflow unless the user explicitly accepts the risk.
 
@@ -387,6 +449,34 @@ Every plan for a Medium+ feature MUST include a task (typically second-to-last, 
   - Skill: `[ "$(wc -l < .claude/skills/{name}/SKILL.md)" -lt 500 ]` exits 0, and its frontmatter `name` matches the directory
   - Rule: the rule body stays 1-line invariants + a pointer to the owning skill (no normative detail)
   - Plus the judgment check: a cold agent reading only project docs can find and correctly use this feature.
+
+### Security Review Task (FIXED — last task of every plan)
+
+Every plan ends with a task that runs the `security-review` skill over the finished diff. It is
+**mandatory** when the feature adds or modifies an entry point (endpoint, webhook, queue consumer,
+scheduled job, CLI command, RPC, agent-callable tool), an outbound request to a service you do not
+control, a data read/write, a permission (role/grant/scope/token audience/access flag), or secret
+handling — which is nearly every plan that is not pure presentation. Emit it as:
+
+```markdown
+### Task N: Revisión de seguridad final
+- **Files:** none (read-only review)
+- **Do:** Invoke the `security-review` skill over the full diff of this feature. Enumerate what
+  this plan adds — {list the entry points / data operations / permissions / secrets from the
+  tasks above} — plus **who can call each one**, and run its seven checks against that. Highest
+  priority: privilege reachability across the trust boundary — any capability running with more
+  authority than its caller must be unreachable from every untrusted caller by every path, not
+  only through the entry point you designed.
+- **Verify:** Every check has a command and its output. Zero CRITICAL findings, or each one has
+  a fix task added below and completed before merge.
+- **Depends on:** all implementation tasks
+- **Risky:** yes
+```
+
+Rules: it goes **last** (there is nothing to review before the code exists), it is **read-only**
+(findings become new fix tasks, never silent edits inside the review task), and a plan that omits
+it must state in `## Risks` why the change has no new data-access surface. Never mark it done
+with "reviewed, looks fine" — the skill's report table is the deliverable.
 
 ### Reuse Over Reinvention
 
