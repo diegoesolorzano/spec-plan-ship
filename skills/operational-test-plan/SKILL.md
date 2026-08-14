@@ -2,7 +2,8 @@
 name: operational-test-plan
 description: >
   Designs operational functional tests for Medium+ features before production.
-  Use after /test-plan when a feature changes a real business capability,
+  Use after /test-plan (Full tier) or DIRECTLY after /feature-plan (Standard tier —
+  its upstream is then the plan itself) when a feature changes a real business capability,
   workflow, automation, user journey, pipeline, agent behavior, admin/operator
   handoff, cron, webhook, or multi-step system flow. Focuses on whether the
   product works in realistic operation, not only whether functions, endpoints,

@@ -43,17 +43,22 @@ Born from combining the best ideas of [BMAD Method](https://docs.bmad-method.org
 7. Validate ops → Review  →  Commit and ship
 ```
 
-### When to use `/test-plan` vs the embedded Test Matrix
+### Development tiers (Lite / Standard / Full)
 
-| Feature complexity | Test approach | Why |
-|-------------------|--------------|-----|
-| **Low** (single layer, CRUD, config) | Test Matrix in plan | Sufficient coverage, minimal overhead |
-| **Medium+** (cross-layer, shared state, multiple consumers) | `/test-plan` | E2E flows, cross-task integration tests, shared fixtures at code level |
-| **Visual/creative** (canvas, animations) | `/test-plan` | Independently identifies testable pure functions even when tasks say `Tests: No` |
+Every change is classified by structural blast radius — after exploring what it touches,
+re-checked at planning. Full table and modifiers: `skills/feature-spec/references/tier-policy.md`.
+
+| Tier | Protocol | Test approach |
+|------|----------|---------------|
+| **Full** — entry points, outbound requests, permissions/secrets, money/state machines, schema transforms, architecture contracts | everything, nothing skipped | `/test-plan` |
+| **Standard** — feature inside an existing subsystem, additive schema, blocking CI, major dep upgrade | short spec → plan → TDD → E2E | Test Matrix in plan; `/operational-test-plan` directly from the plan when it changes a real workflow |
+| **Lite** — copy/styles/docs/config, local fixes, patch/minor deps | implement directly | verification by change type |
+
+In doubt → the higher tier; discovering a higher trigger mid-change promotes the change. The security-review gate and the LLM-evals modifier apply in every tier.
 
 ### When to use `/operational-test-plan`
 
-Use it after `/test-plan` when a feature changes a real operating workflow: business capability, conversational pipeline, admin/operator handoff, webhook, queue, cron, external integration, state machine, or multi-step user journey.
+Use it when a feature changes a real operating workflow: business capability, conversational pipeline, admin/operator handoff, webhook, queue, cron, external integration, state machine, or multi-step user journey. Full tier runs it after `/test-plan`; Standard tier runs it directly from the plan.
 
 Technical E2E asks "does the UI/API path run?" Operational testing asks "does the product actually work for the business scenario?" A restaurant order flow, for example, is not shipped because the menu API and order page pass; it is shipped when realistic customer messages create the right pending order, the operator can act on it, and the customer receives the right outcome.
 

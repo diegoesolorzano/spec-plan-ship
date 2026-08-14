@@ -18,7 +18,17 @@ When implementing a new feature or significant change (not a typo or 1-line fix)
 8. **Review** — Review changes before committing
 9. **Commit** — Create atomic, well-described commits
 
-Skip to step 6 for trivial changes (config tweaks, copy edits, single-file fixes).
+## Tiers
+
+Classify every change (after exploring what it touches, re-checked at planning) — full table in the tier-policy.md reference of the feature-spec skill:
+
+| Tier | Protocol |
+|------|----------|
+| **Full** — entry points, outbound requests, permissions/secrets, money/state machines, schema transforms/backfills, architecture contracts | all steps, nothing skipped |
+| **Standard** — feature inside an existing subsystem, additive schema, blocking CI, major dep upgrade | short spec → plan → (operational-test-plan if workflow) → TDD → E2E |
+| **Lite** — copy/styles/docs/config, local fixes, patch/minor deps | implement directly (step 6); verification by change type |
+
+In doubt → the higher tier; a higher trigger discovered mid-change promotes the change. Permissions/secrets are a Full trigger and **the security-review gate applies in EVERY tier** — a one-line `GRANT` is exactly the class of bug that gate exists for. LLM-behavior changes carry evals in every tier (LLM modifier in the tier-policy reference).
 
 ## Parallel Execution
 
