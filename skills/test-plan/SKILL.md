@@ -15,6 +15,14 @@ allowed-tools: Read, Glob, Grep, Write, AskUserQuestion, Agent
 
 # Test Plan
 
+## Tier Guard (first)
+
+Read the plan's `**Tier:**` metadata (or the spec's). This skill applies to **Full-tier
+changes only** (or a change promoted to Full). If the tier is Standard or Lite, STOP and
+reply: "test-plan applies only to Full tier; the plan's embedded Test Matrix is the test
+artifact. A Standard operational feature invokes /operational-test-plan directly from the
+plan." Do not produce an artifact.
+
 You are a **QA Architect**. Your job is to design the complete test suite for a feature BEFORE any implementation code is written. You read the approved plan, understand the contracts, and produce a test plan that the `/tdd` skill consumes during implementation.
 
 ## Why This Phase Exists

@@ -19,11 +19,22 @@ You are a **Software Architect**. Your job is to define HOW to build it, WHERE t
 
 ## Procedure
 
-### Step 1: Load the Spec
+### Step 1: Load the Spec — and the Tier
 
 - If the user provided a file path as argument, read it.
 - If no argument, ask: "Do you have a spec file? Or describe the change you want to implement."
 - If a spec exists in `docs/specs/`, confirm it's the right one.
+- **Tier:** read the spec's `**Tier:**`/`**Modifiers:**` metadata (below the contract
+  header) and copy it into the plan the same way. If there is no spec (inline description,
+  legacy spec, or a Lite change), classify HERE with the decision table in the
+  `tier-policy.md` reference of the feature-spec skill — Lite changes use this skill's
+  lite mode as their (optional) planning artifact.
+- **Mandatory reclassification:** once the task breakdown exposes concrete files and
+  contracts, re-check the tier. If a higher trigger appears (an entry point, a permission,
+  a data transform…), promote the change, say so explicitly, and continue at the higher
+  tier — never finish at the stale tier.
+- If `**Modifiers:** llm-evals` is set, the plan's final checklist MUST include: "evals /
+  A-B evidence archived before merge" (see the LLM modifier in tier-policy.md).
 
 ### Step 2: Assess Complexity
 
@@ -352,8 +363,13 @@ Once approved, update status in `docs/specs/{id}-plan.md` if needed.
 
 Determine what comes next based on the feature-workflow rule. **Never suggest jumping to implementation directly.**
 
-- **If the plan is full mode (non-trivial / Medium+ complexity):**
+- **If the tier is Full:**
   Suggest: "Next step: `/test-plan docs/specs/{id}-plan.md` to expand the Test Matrix into a full test suite before implementing. If this feature changes a real product workflow, run `/operational-test-plan docs/specs/{id}-plan.md` after `/test-plan`."
+
+- **If the tier is Standard:** do NOT suggest `/test-plan` — the plan's embedded Test
+  Matrix is the test artifact. If the feature changes a real product workflow, suggest
+  `/operational-test-plan docs/specs/{id}-plan.md` DIRECTLY from the plan. Otherwise
+  proceed to the Sprint Goal display and `/tdd`.
 
 - **If the plan is lite mode (trivial / Low complexity):**
   Display the Sprint Goal with the plan path and method as reference:
@@ -374,7 +390,7 @@ Determine what comes next based on the feature-workflow rule. **Never suggest ju
   execution costs a worktree and a dependency install per concurrent task, so it earns its keep only
   on genuinely wide plans.
 
-The feature-workflow sequence is: spec → plan → **test-plan (Medium+)** → **operational-test-plan when workflow behavior changes** → **Sprint Goal display** → implement with /tdd. Skipping test-plan for Medium+ features violates the workflow. Skipping operational-test-plan for Medium+ workflow features violates the workflow unless the user explicitly accepts the risk.
+The feature-workflow sequence is: spec → plan → **test-plan (Full tier)** → **operational-test-plan when workflow behavior changes (Full and Standard)** → **Sprint Goal display** → implement with /tdd. Skipping test-plan for a Full-tier feature violates the workflow. Skipping operational-test-plan for a workflow feature violates the workflow unless the user explicitly accepts the risk.
 
 #### Task Tracking (full mode only — MANDATORY)
 

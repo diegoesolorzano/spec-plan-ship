@@ -40,6 +40,32 @@ Use Glob, Grep, and Read to scan the codebase and identify:
 
 Reference specific file paths in the spec.
 
+### Step 2.5: Classify the Tier
+
+With the exploration done (never before — the criteria require knowing what the change
+touches), classify the change using the decision table in `references/tier-policy.md`
+(bundled with this skill): **Full / Standard / Lite**, plus the transversal modifiers
+(`llm-evals` for any non-deterministic behavior change; `security-review` whenever a
+security-gate trigger applies — in every tier). Promotion rule: in doubt, the higher tier;
+a higher trigger discovered later promotes the change.
+
+Then branch:
+
+- **Lite** → do NOT produce a spec. Tell the user the change is Lite, name the verification
+  its change type requires (tier-policy table), and hand off to direct implementation
+  (`/feature-plan` lite mode via inline description is optional). Exit this skill.
+- **Standard** → produce the spec with the required reduced section set ONLY: Problem
+  Statement, Requirements, Acceptance Criteria, Sprint Goal — body ≤ 60 lines.
+- **Full** → continue with the complete flow below.
+
+Record the classification in the spec **after the contract header block and one blank
+line** (outside the six normative fields):
+
+```markdown
+**Tier:** standard
+**Modifiers:** llm-evals
+```
+
 ### Step 3: Draft the Spec
 
 The spec should be **as detailed as the feature requires**. A simple endpoint gets a short spec. A feature that involved evaluating multiple approaches, analyzing production data, or debating architecture gets a comprehensive spec that captures all of that context.
