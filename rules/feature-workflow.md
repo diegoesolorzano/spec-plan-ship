@@ -15,8 +15,9 @@ When implementing a new feature or significant change (not a typo or 1-line fix)
 5. **Sprint Goal** — Before implementing, display the Sprint Goal from the plan. This is the acceptance criteria the agent must satisfy autonomously. Show it after the last planning artifact: after `/operational-test-plan` if one was created, otherwise after `/test-plan` or `/feature-plan`. Format: quote the `## Sprint Goal` section from the plan file. Optional but recommended — gives agents a clear stopping criterion.
 6. **Implement with TDD** — For each plan task, use `/tdd` (which consumes the test plan or Test Matrix) to write tests first, then implement. Pure functions get tests even if the task is marked `Tests: No`.
 7. **Operational validation** — Before marking a Medium+ workflow feature shipped, execute the blocking scenarios from `docs/specs/{id}-ops.md` or record explicit user acceptance of the risk.
-8. **Review** — Review changes before committing
-9. **Commit** — Create atomic, well-described commits
+8. **Security review (fixed final task of every plan)** — Invoke the `security-review` skill over the finished diff. Mandatory whenever the change adds or modifies an entry point (endpoint, webhook, queue consumer, scheduled job, CLI command, RPC, agent-callable tool), an outbound request to a service you do not control, a data read/write, a permission (role/grant/scope/token audience/access flag), or secret handling. Read-only: findings become fix tasks. See rule `security-review-gate`.
+9. **Review** — Review changes before committing
+10. **Commit** — Create atomic, well-described commits
 
 ## Tiers
 
@@ -28,7 +29,7 @@ Classify every change (after exploring what it touches, re-checked at planning) 
 | **Standard** — feature inside an existing subsystem, additive schema, blocking CI, major dep upgrade | short spec → plan → (operational-test-plan if workflow) → TDD → E2E |
 | **Lite** — copy/styles/docs/config, local fixes, patch/minor deps | implement directly (step 6); verification by change type |
 
-In doubt → the higher tier; a higher trigger discovered mid-change promotes the change. Permissions/secrets are a Full trigger and **the security-review gate applies in EVERY tier** — a one-line `GRANT` is exactly the class of bug that gate exists for. LLM-behavior changes carry evals in every tier (LLM modifier in the tier-policy reference).
+In doubt → the higher tier; a higher trigger discovered mid-change promotes the change. Permissions/secrets are a Full trigger and **the security-review gate (step 8) applies in EVERY tier** — a one-line `GRANT` is exactly the class of bug that gate exists for. LLM-behavior changes carry evals in every tier (LLM modifier in the tier-policy reference).
 
 ## Parallel Execution
 
